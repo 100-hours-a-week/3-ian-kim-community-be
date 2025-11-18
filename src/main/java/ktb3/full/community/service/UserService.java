@@ -3,7 +3,6 @@ package ktb3.full.community.service;
 import ktb3.full.community.common.exception.*;
 import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
-import ktb3.full.community.dto.request.UserLoginRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.UserProfileResponse;
@@ -39,17 +38,6 @@ public class UserService {
         String profilePath = imageUploadService.saveImageAndGetPath(request.getProfile());
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         return userRepository.save(request.toUserEntity(encodedPassword, profilePath)).getId();
-    }
-
-    public UserAccountResponse login(UserLoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(InvalidCredentialsException::new);
-
-        if (!user.getPassword().equals(request.getPassword())) {
-            throw new InvalidCredentialsException();
-        }
-
-        return UserAccountResponse.from(user);
     }
 
     public UserAccountResponse getUserAccount(long userId) {
