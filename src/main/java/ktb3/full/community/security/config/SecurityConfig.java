@@ -2,6 +2,7 @@ package ktb3.full.community.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ktb3.full.community.security.filter.LoginFilter;
+import ktb3.full.community.security.handler.SpaCsrfTokenRequestHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import static ktb3.full.community.common.Constants.*;
@@ -44,8 +47,16 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .formLogin(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
                 .requestCache(RequestCacheConfigurer::disable)
+
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                        .ignoringRequestMatchers(
+                                PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, REGISTER),
+                                PathPatternRequestMatcher.withDefaults().matcher(LOGIN)
+                        ))
+
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
 
                 .exceptionHandling(exception -> exception
