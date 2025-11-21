@@ -1,6 +1,7 @@
 package ktb3.full.community.service;
 
 import ktb3.full.community.common.exception.PostNotFoundException;
+import ktb3.full.community.common.exception.UserNotFoundException;
 import ktb3.full.community.domain.entity.Post;
 import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.PostCreateRequest;
@@ -8,6 +9,7 @@ import ktb3.full.community.dto.request.PostUpdateRequest;
 import ktb3.full.community.dto.response.PostDetailResponse;
 import ktb3.full.community.dto.response.PostResponse;
 import ktb3.full.community.repository.PostRepository;
+import ktb3.full.community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final PostLikeService postLikeService;
     private final ImageUploadService imageUploadService;
 
@@ -35,7 +37,7 @@ public class PostService {
     @Transactional
     public PostDetailResponse getPost(long userId, long postId) {
         postRepository.increaseViewCount(postId);
-        Post post = getOrThrow(postId);
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         boolean liked = postLikeService.isLiked(userId, postId);
         return PostDetailResponse.from(post, liked);
     }
@@ -45,7 +47,7 @@ public class PostService {
         MultipartFile image = request.getImage();
         String imagePath = imageUploadService.saveImageAndGetPath(request.getImage());
         String imageName = image != null ? image.getOriginalFilename() : null;
-        User user = userService.getOrThrow(userId);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Post post = request.toEntity(user, imagePath, imageName);
 
         postRepository.save(post);
@@ -56,7 +58,7 @@ public class PostService {
     @PreAuthorize("@postRepository.findById(#postId).get().getUser().getId() == principal.userId")
     @Transactional
     public PostDetailResponse updatePost(long postId, PostUpdateRequest request) {
-        Post post = getOrThrow(postId);
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
         if (request.getTitle() != null) {
             post.updateTitle(request.getTitle());
@@ -79,15 +81,5 @@ public class PostService {
     @Transactional
     public void deleteAllPostByUserId(long userId) {
         postRepository.deleteAllByUserId(userId);
-    }
-
-    public Post getOrThrow(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow(PostNotFoundException::new);
-    }
-
-    public Post getForUpdateOrThrow(long postId) {
-        return postRepository.findByIdForUpdate(postId)
-                .orElseThrow(PostNotFoundException::new);
     }
 }

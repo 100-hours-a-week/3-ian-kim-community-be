@@ -1,7 +1,8 @@
 package ktb3.full.community.service;
 
 import ktb3.full.community.common.exception.CommentNotFoundException;
-import ktb3.full.community.common.exception.base.NotFoundException;
+import ktb3.full.community.common.exception.PostNotFoundException;
+import ktb3.full.community.common.exception.UserNotFoundException;
 import ktb3.full.community.domain.entity.Comment;
 import ktb3.full.community.domain.entity.Post;
 import ktb3.full.community.domain.entity.User;
@@ -9,6 +10,8 @@ import ktb3.full.community.dto.request.CommentCreateRequest;
 import ktb3.full.community.dto.request.CommentUpdateRequest;
 import ktb3.full.community.dto.response.CommentResponse;
 import ktb3.full.community.repository.CommentRepository;
+import ktb3.full.community.repository.PostRepository;
+import ktb3.full.community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final UserService userService;
-    private final PostService postService;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
     public PagedModel<CommentResponse> getAllComments(long postId, Pageable pageable) {
         Page<Comment> commentsPageResponse = commentRepository.findAllLatestByPostId(postId, pageable);
@@ -32,14 +35,14 @@ public class CommentService {
     }
 
     public CommentResponse getComment(long commentId) {
-        Comment comment = getOrThrow(commentId);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         return CommentResponse.from(comment);
     }
 
     @Transactional
     public CommentResponse createComment(long userId, long postId, CommentCreateRequest request) {
-        User user = userService.getOrThrow(userId);
-        Post post = postService.getForUpdateOrThrow(postId);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Post post = postRepository.findByIdForUpdate(postId).orElseThrow(PostNotFoundException::new);
         Comment comment = request.toEntity(user, post);
         post.increaseCommentCount();
         commentRepository.save(comment);
@@ -49,7 +52,7 @@ public class CommentService {
     @PreAuthorize("@commentRepository.findById(#commentId).get().getUser().getId() == principal.userId")
     @Transactional
     public CommentResponse updateComment(long commentId, CommentUpdateRequest request) {
-        Comment comment = getOrThrow(commentId);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 
         if (request.getContent() != null) {
             comment.updateContent(request.getContent());
@@ -62,9 +65,9 @@ public class CommentService {
     @Transactional
     public void deleteComment(long commentId) {
         // soft delete
-        Comment comment = getOrThrow(commentId);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         comment.delete();
-        Post post = postService.getForUpdateOrThrow(comment.getPost().getId());
+        Post post = postRepository.findByIdForUpdate(comment.getPost().getId()).orElseThrow(PostNotFoundException::new);
         post.decreaseCommentCount();
     }
 
@@ -76,10 +79,5 @@ public class CommentService {
     @Transactional
     public void deleteAllCommentByUserId(long userId) {
         commentRepository.deleteAllByUserId(userId);
-    }
-
-    public Comment getOrThrow(Long commentId) throws NotFoundException {
-        return commentRepository.findById(commentId)
-                .orElseThrow(CommentNotFoundException::new);
     }
 }
