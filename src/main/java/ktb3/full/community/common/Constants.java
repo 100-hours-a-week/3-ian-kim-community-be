@@ -18,6 +18,23 @@ public abstract class Constants {
     public static final String MESSAGE_POST_TITLE_PATTERN = "제목은 1 ~ 26자로 입력해주세요.";
     public static final String MESSAGE_POST_CONTENT_PATTERN = "내용을 입력해주세요.";
 
+    // Name
+    public static final String SESSION_COOKIE_NAME = "JSESSIONID";
+
+    // Value
+    public static final int MAXIMUM_SESSIONS = 1;
+
+    // API
+    public static final String[] WHITE_LIST = {
+            "/users/email-validation",
+            "/users/nickname-validation",
+    };
+
+    public static final String REGISTER = "/users";
+    public static final String LOGIN = "/users/login";
+    public static final String LOGOUT = "/user/logout";
+    public static final String GET_POST_LIST = "/posts";
+
     // etc
     public static final String DELETED_AUTHOR = "(탈퇴한 회원)";
 }

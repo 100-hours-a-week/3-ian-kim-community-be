@@ -4,10 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import ktb3.full.community.common.annotation.constraint.EmailPattern;
 import ktb3.full.community.common.annotation.constraint.NicknamePattern;
-import ktb3.full.community.dto.request.UserLoginRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.ApiSuccessResponse;
-import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.dto.response.UserProfileResponse;
 import ktb3.full.community.dto.response.UserValidationResponse;
 import ktb3.full.community.presentation.api.UserApi;
@@ -46,13 +44,6 @@ public class UserApiController implements UserApi {
         long userId = userService.register(userRegisterRequest);
         return ResponseEntity.created(URI.create(String.format("/users/%d", userId)))
                 .body(ApiSuccessResponse.getBaseResponse());
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
-        UserAccountResponse userAccountResponse = userService.login(userLoginRequest);
-        return ResponseEntity.ok()
-                .body(ApiSuccessResponse.of(userAccountResponse));
     }
 
     @GetMapping("/{userId}")
