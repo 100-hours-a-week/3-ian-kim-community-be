@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -33,7 +31,7 @@ public class UserService {
     }
 
     @Transactional
-    public long register(UserRegisterRequest request) throws IOException {
+    public long register(UserRegisterRequest request) {
         validateEmailDuplication(request.getEmail());
         validateNicknameDuplication(request.getNickname());
         String profilePath = imageUploadService.saveImageAndGetPath(request.getProfile());
@@ -62,7 +60,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) throws IOException {
+    public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) {
         User user = getOrThrow(userId);
 
         if (request.getNickname() != null) {

@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @RequiredArgsConstructor
 @RequestMapping("/user")
 @RestController
@@ -33,7 +31,7 @@ public class AuthenticatedUserApiController implements AuthenticatedUserApi {
     @PatchMapping
     public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> updateUserAccount(
             @Authentication Long loggedInUserId,
-            @Valid @ModelAttribute UserAccountUpdateRequest userAccountUpdateRequest) throws IOException {
+            @Valid @ModelAttribute UserAccountUpdateRequest userAccountUpdateRequest) {
         UserAccountResponse userAccountResponse = userService.updateAccount(loggedInUserId, userAccountUpdateRequest);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(userAccountResponse));

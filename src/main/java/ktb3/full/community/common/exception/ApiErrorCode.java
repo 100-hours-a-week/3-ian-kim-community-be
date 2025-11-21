@@ -40,6 +40,7 @@ public enum ApiErrorCode {
 
     // 500 Internal Server Error
     INTERNAL_SERVER_ERROR("5001", "현재 서버에서 요청을 처리할 수 없습니다. 잠시 후 다시 시도해주세요."),
+    IMAGE_UPLOAD_FAILED("5002", "이미지 업로드에 실패했습니다."),
     ;
 
     private final String code;

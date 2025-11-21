@@ -1,5 +1,6 @@
 package ktb3.full.community.service;
 
+import ktb3.full.community.common.exception.ImageUploadFailedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,14 +20,18 @@ public class ImageUploadService {
     @Value("${file.path.image}")
     private String fileImagePath;
 
-    public String saveImageAndGetPath(MultipartFile image) throws IOException {
+    public String saveImageAndGetPath(MultipartFile image) {
         String imagePath = null;
 
         if (image != null) {
             imagePath = this.fileImagePath + "/" + UUID.randomUUID() + image.getOriginalFilename();
             Path path = Paths.get(this.fileBasePath + imagePath);
-            Files.createDirectories(path.getParent());
-            Files.write(path, image.getBytes());
+            try {
+                Files.createDirectories(path.getParent());
+                Files.write(path, image.getBytes());
+            } catch (IOException e) {
+                throw new ImageUploadFailedException();
+            }
         }
 
         return imagePath;

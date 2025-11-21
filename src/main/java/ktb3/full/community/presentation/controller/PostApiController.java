@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.net.URI;
 
 @Validated
@@ -53,7 +52,7 @@ public class PostApiController implements PostApi {
     public ResponseEntity<ApiSuccessResponse<PostDetailResponse>> createPost(
             @Authentication Long loggedInUserId,
             @Valid @ModelAttribute PostCreateRequest request
-    ) throws IOException {
+    ) {
         PostDetailResponse response = postService.createPost(loggedInUserId, request);
         return ResponseEntity.created(URI.create(String.format("/posts/%d", response.getPostId())))
                 .body(ApiSuccessResponse.of(response));
@@ -63,7 +62,7 @@ public class PostApiController implements PostApi {
     public ResponseEntity<ApiSuccessResponse<PostDetailResponse>> updatePost(
             @Authentication Long loggedInUserId,
             @Positive @PathVariable("postId") long postId,
-            @Valid @ModelAttribute PostUpdateRequest request) throws IOException {
+            @Valid @ModelAttribute PostUpdateRequest request) {
         PostDetailResponse response = postService.updatePost(loggedInUserId, postId, request);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(response));

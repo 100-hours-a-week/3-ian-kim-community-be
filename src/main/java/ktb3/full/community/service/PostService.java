@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -42,7 +40,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostDetailResponse createPost(long userId, PostCreateRequest request) throws IOException {
+    public PostDetailResponse createPost(long userId, PostCreateRequest request) {
         MultipartFile image = request.getImage();
         String imagePath = imageUploadService.saveImageAndGetPath(request.getImage());
         String imageName = image != null ? image.getOriginalFilename() : null;
@@ -55,7 +53,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostDetailResponse updatePost(long userId, long postId, PostUpdateRequest request) throws IOException {
+    public PostDetailResponse updatePost(long userId, long postId, PostUpdateRequest request) {
         Post post = getOrThrow(postId);
         userService.validatePermission(userId, post.getUser().getId());
 

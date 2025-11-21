@@ -17,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.io.IOException;
-
 @Tag(name = "AuthenticatedUser", description = "인증된 회원 API")
 public interface AuthenticatedUserApi {
 
@@ -40,7 +38,7 @@ public interface AuthenticatedUserApi {
     })
     ResponseEntity<ApiSuccessResponse<UserAccountResponse>> updateUserAccount(
             @Authentication Long loggedInUserId,
-            @Valid @ModelAttribute UserAccountUpdateRequest userAccountUpdateRequest) throws IOException;
+            @Valid @ModelAttribute UserAccountUpdateRequest userAccountUpdateRequest);
 
     @Operation(summary = "회원 비밀번호 수정", description = "회원의 비밀번호를 수정합니다.")
     @ApiResponses(value = {
