@@ -11,13 +11,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import ktb3.full.community.common.annotation.constraint.EmailPattern;
 import ktb3.full.community.common.annotation.constraint.NicknamePattern;
-import ktb3.full.community.dto.request.UserLoginRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "User", description = "회원 API")
@@ -51,16 +49,6 @@ public interface UserApi {
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<ApiSuccessResponse<Void>> signUp(@Valid @ModelAttribute UserRegisterRequest userRegisterRequest);
-
-    @Operation(summary = "로그인", description = "회원의 이메일과 비밀번호를 인증합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 입력",
-                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
-            @ApiResponse(responseCode = "401", description = "인증 실패",
-                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))),
-    })
-    ResponseEntity<ApiSuccessResponse<UserAccountResponse>> login(@Valid @RequestBody UserLoginRequest userLoginRequest);
 
     @Operation(summary = "사용자 조회", description = "ID를 이용해 특정 사용자를 조회합니다.")
     @ApiResponses(value = {

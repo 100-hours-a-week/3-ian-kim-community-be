@@ -1,7 +1,8 @@
 package ktb3.full.community.presentation.controller;
 
 import jakarta.validation.Valid;
-import ktb3.full.community.common.annotation.resolver.Authentication;
+import ktb3.full.community.security.userdetails.AuthUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.response.ApiSuccessResponse;
@@ -22,39 +23,33 @@ public class AuthenticatedUserApiController implements AuthenticatedUserApi {
     private final UserDeleteService userDeleteService;
 
     @GetMapping
-    public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> getUserAccount(@Authentication Long loggedInUserId) {
-        UserAccountResponse userAccountResponse = userService.getUserAccount(loggedInUserId);
+    public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> getUserAccount(@AuthenticationPrincipal AuthUserDetails userDetails) {
+        UserAccountResponse userAccountResponse = userService.getUserAccount(userDetails.getUserId());
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(userAccountResponse));
     }
 
     @PatchMapping
     public ResponseEntity<ApiSuccessResponse<UserAccountResponse>> updateUserAccount(
-            @Authentication Long loggedInUserId,
+            @AuthenticationPrincipal AuthUserDetails userDetails,
             @Valid @ModelAttribute UserAccountUpdateRequest userAccountUpdateRequest) {
-        UserAccountResponse userAccountResponse = userService.updateAccount(loggedInUserId, userAccountUpdateRequest);
+        UserAccountResponse userAccountResponse = userService.updateAccount(userDetails.getUserId(), userAccountUpdateRequest);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(userAccountResponse));
     }
 
     @PatchMapping("/password")
     public ResponseEntity<ApiSuccessResponse<Void>> updatePassword(
-            @Authentication Long loggedInUserId,
+            @AuthenticationPrincipal AuthUserDetails userDetails,
             @Valid @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest) {
-        userService.updatePassword(loggedInUserId, userPasswordUpdateRequest);
-        return ResponseEntity.ok()
-                .body(ApiSuccessResponse.getBaseResponse());
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<ApiSuccessResponse<Void>> logout() {
+        userService.updatePassword(userDetails.getUserId(), userPasswordUpdateRequest);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.getBaseResponse());
     }
 
     @DeleteMapping
-    public ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(@Authentication Long loggedInUserId) {
-        userDeleteService.deleteAccount(loggedInUserId);
+    public ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(@AuthenticationPrincipal AuthUserDetails userDetails) {
+        userDeleteService.deleteAccount(userDetails.getUserId());
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.getBaseResponse());
     }

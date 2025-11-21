@@ -2,7 +2,8 @@ package ktb3.full.community.presentation.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import ktb3.full.community.common.annotation.resolver.Authentication;
+import ktb3.full.community.security.userdetails.AuthUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import ktb3.full.community.dto.request.CommentCreateRequest;
 import ktb3.full.community.dto.request.CommentUpdateRequest;
 import ktb3.full.community.dto.response.ApiSuccessResponse;
@@ -43,29 +44,29 @@ public class CommentApiController implements CommentApi {
 
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<ApiSuccessResponse<CommentResponse>> createComment(
-            @Authentication Long loggedInUserId,
+            @AuthenticationPrincipal AuthUserDetails userDetails,
             @Positive @PathVariable("postId") long postId,
             @Valid @RequestBody CommentCreateRequest request) {
-        CommentResponse response = commentService.createComment(loggedInUserId, postId, request);
+        CommentResponse response = commentService.createComment(userDetails.getUserId(), postId, request);
         return ResponseEntity.created(URI.create(String.format("/comments/%d", response.getCommentId())))
                 .body(ApiSuccessResponse.of(response));
     }
 
     @PatchMapping("/comments/{commentId}")
     public ResponseEntity<ApiSuccessResponse<CommentResponse>> updateComment(
-            @Authentication Long loggedInUserId,
+            @AuthenticationPrincipal AuthUserDetails userDetails,
             @Positive @PathVariable("commentId") long commentId,
             @Valid @RequestBody CommentUpdateRequest request) {
-        CommentResponse response = commentService.updateComment(loggedInUserId, commentId, request);
+        CommentResponse response = commentService.updateComment(userDetails.getUserId(), commentId, request);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(response));
     }
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<ApiSuccessResponse<Void>> deleteComment(
-            @Authentication Long loggedInUserId,
+            @AuthenticationPrincipal AuthUserDetails userDetails,
             @Positive @PathVariable("commentId") long commentId) {
-        commentService.deleteComment(loggedInUserId, commentId);
+        commentService.deleteComment(userDetails.getUserId(), commentId);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.getBaseResponse());
     }
