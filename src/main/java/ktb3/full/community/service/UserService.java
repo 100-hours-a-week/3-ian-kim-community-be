@@ -41,18 +41,18 @@ public class UserService {
     }
 
     public UserAccountResponse getUserAccount(long userId) {
-        User user = getOrThrow(userId);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         return UserAccountResponse.from(user);
     }
 
     public UserProfileResponse getUserProfile(long userId) {
-        User user = getOrThrow(userId);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         return UserProfileResponse.from(user);
     }
 
     @Transactional
     public UserAccountResponse updateAccount(long userId, UserAccountUpdateRequest request) {
-        User user = getOrThrow(userId);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         if (request.getNickname() != null) {
             validateNicknameDuplication(request.getNickname());
@@ -69,13 +69,8 @@ public class UserService {
 
     @Transactional
     public void updatePassword(long userId, UserPasswordUpdateRequest request) {
-        User user = getOrThrow(userId);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         user.updatePassword(passwordEncoder.encode(request.getPassword()));
-    }
-
-    public User getOrThrow(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
     }
 
     private void validateEmailDuplication(String email) {
