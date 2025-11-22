@@ -73,9 +73,4 @@ public class CommentService {
     public void deleteAllCommentByPostId(long postId) {
         commentRepository.deleteAllByPostId(postId);
     }
-
-    @Transactional
-    public void deleteAllCommentByUserId(long userId) {
-        commentRepository.deleteAllByUserId(userId);
-    }
 }
