@@ -31,7 +31,7 @@ public class PostCreateRequest {
     @Schema(description = "이미지", example = "https://test.kr/test.jpg")
     private final MultipartFile image;
 
-    public Post toEntity(User user, String imagePath, String imageName) {
-        return Post.create(user, title, content, imagePath, imageName);
+    public Post toEntity(User user, String originImageName, String imageName) {
+        return Post.create(user, title, content, originImageName, imageName);
     }
 }

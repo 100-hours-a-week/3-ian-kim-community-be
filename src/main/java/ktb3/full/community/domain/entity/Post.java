@@ -29,11 +29,11 @@ public class Post extends AuditTime {
     @Column(name = "content", nullable = false, columnDefinition = "LONGTEXT")
     private String content;
 
-    @Column(name = "origin_image_name", nullable = true, length = 255)
+    @Column(name = "origin_image_name", length = 255)
     private String originImageName;
 
-    @Column(name = "image_path", nullable = true, unique = true, length = 255)
-    private String imagePath;
+    @Column(name = "image_name", unique = true, length = 255)
+    private String imageName;
 
     @Column(name = "view_count", nullable = false)
     private int viewCount;
@@ -47,14 +47,14 @@ public class Post extends AuditTime {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    public static Post create(User user, String title, String content, String imagePath, String imageName) {
+    public static Post create(User user, String title, String content, String originImageName, String imageName) {
         return Post.builder()
                 .id(null)
                 .user(user)
                 .title(title)
                 .content(content)
-                .imagePath(imagePath)
-                .originImageName(imageName)
+                .originImageName(originImageName)
+                .imageName(imageName)
                 .likeCount(0)
                 .commentCount(0)
                 .viewCount(0)
@@ -70,9 +70,9 @@ public class Post extends AuditTime {
         this.content = content;
     }
 
-    public void updateImage(String imagePath, String imageName) {
-        this.imagePath = imagePath;
-        this.originImageName = imageName;
+    public void updateImage(String originImageName, String imageName) {
+        this.originImageName = originImageName;
+        this.imageName = imageName;
     }
 
     public void increaseLikeCount() {
@@ -91,16 +91,8 @@ public class Post extends AuditTime {
         this.commentCount--;
     }
 
-    public void increaseViewCount() {
-        this.viewCount++;
-    }
-
     public void delete() {
         this.isDeleted = true;
         this.auditDeletedAt();
-    }
-
-    public void deleteUser() {
-        this.user = null;
     }
 }

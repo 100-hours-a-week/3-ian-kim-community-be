@@ -35,10 +35,10 @@ public class PostDetailResponse {
     private final String content;
 
     @Schema(description = "이미지 경로", example = "https://test.kr/test.jpg")
-    private final String imagePath;
+    private final String imageName;
 
     @Schema(description = "이미지 파일명", example = "test.jpg")
-    private final String imageName;
+    private final String originImageName;
 
     @Schema(description = "좋아요 여부", example = "true")
     private final boolean liked;
@@ -68,8 +68,8 @@ public class PostDetailResponse {
                 .authorNickname(AccountValidator.getAuthorName(post.getUser()))
                 .authorProfile(AccountValidator.getAuthorProfileImageName(post.getUser()))
                 .content(post.getContent())
-                .imagePath(post.getImagePath())
-                .imageName(post.getOriginImageName())
+                .imageName(post.getImageName())
+                .originImageName(post.getOriginImageName())
                 .liked(liked)
                 .createdDate(post.getCreatedAt())
                 .updatedDate(post.getUpdatedAt())
