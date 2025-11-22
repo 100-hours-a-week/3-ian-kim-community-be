@@ -35,7 +35,7 @@ public class UserService {
     public long register(UserRegisterRequest request) {
         validateEmailDuplication(request.getEmail());
         validateNicknameDuplication(request.getNickname());
-        String profileImageName = imageUploadService.saveImageAndGetPath(request.getProfileImage());
+        String profileImageName = imageUploadService.saveImageAndGetName(request.getProfileImage());
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         return userRepository.save(request.toUserEntity(encodedPassword, profileImageName)).getId();
     }
@@ -60,7 +60,7 @@ public class UserService {
         }
 
         if (request.getProfileImage() != null) {
-            String profileImageName = imageUploadService.saveImageAndGetPath(request.getProfileImage());
+            String profileImageName = imageUploadService.saveImageAndGetName(request.getProfileImage());
             user.updateProfileImageName(profileImageName);
         }
     }

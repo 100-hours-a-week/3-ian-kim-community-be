@@ -20,12 +20,12 @@ public class ImageUploadService {
     @Value("${file.path.image}")
     private String fileImagePath;
 
-    public String saveImageAndGetPath(MultipartFile image) {
-        String imagePath = null;
+    public String saveImageAndGetName(MultipartFile image) {
+        String imageName = null;
 
         if (image != null) {
-            imagePath = this.fileImagePath + "/" + UUID.randomUUID() + image.getOriginalFilename();
-            Path path = Paths.get(this.fileBasePath + imagePath);
+            imageName = this.fileImagePath + "/" + UUID.randomUUID();
+            Path path = Paths.get(this.fileBasePath + imageName);
             try {
                 Files.createDirectories(path.getParent());
                 Files.write(path, image.getBytes());
@@ -34,6 +34,6 @@ public class ImageUploadService {
             }
         }
 
-        return imagePath;
+        return imageName;
     }
 }

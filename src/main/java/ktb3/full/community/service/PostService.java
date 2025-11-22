@@ -45,7 +45,7 @@ public class PostService {
     @Transactional
     public long createPost(long userId, PostCreateRequest request) {
         MultipartFile image = request.getImage();
-        String imagePath = imageUploadService.saveImageAndGetPath(request.getImage());
+        String imagePath = imageUploadService.saveImageAndGetName(request.getImage());
         String imageName = image != null ? image.getOriginalFilename() : null;
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Post post = request.toEntity(user, imagePath, imageName);
@@ -67,7 +67,7 @@ public class PostService {
         }
 
         if (request.getImage() != null) {
-            String imagePath = imageUploadService.saveImageAndGetPath(request.getImage());
+            String imagePath = imageUploadService.saveImageAndGetName(request.getImage());
             post.updateImage(imagePath, request.getImage().getOriginalFilename());
         }
     }
