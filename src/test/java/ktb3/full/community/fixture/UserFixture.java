@@ -14,6 +14,10 @@ public class UserFixture {
         );
     }
 
+    public static User createUser() {
+        return createUser(null, null, null, null, false);
+    }
+
     public static User createWithEmail(String email) {
         return createUser(email, null, null, null, false);
     }
