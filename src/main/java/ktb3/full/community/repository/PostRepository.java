@@ -32,7 +32,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             countQuery = "select count(p) from Post p where p.isDeleted = false")
     Page<Post> findAll(@NonNull Pageable pageable);
 
-    @Modifying
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "update Post p set p.user = null where p.user.id = :userId")
     void deleteAllByUserId(@Param("userId") long userId);
 }
