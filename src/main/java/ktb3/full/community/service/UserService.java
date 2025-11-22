@@ -68,6 +68,7 @@ public class UserService {
     @Transactional
     public void updatePassword(long userId, UserPasswordUpdateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        validateIsPasswordChanged(user.getPassword(), request.getPassword());
         user.updatePassword(passwordEncoder.encode(request.getPassword()));
     }
 
@@ -80,6 +81,12 @@ public class UserService {
     private void validateNicknameDuplication(String nickname) {
         if (userRepository.existsByNickname(nickname)) {
             throw new DuplicatedNicknameException();
+        }
+    }
+
+    private void validateIsPasswordChanged(String oldEncodedPassword, String newRawPassword) {
+        if (passwordEncoder.matches(newRawPassword, oldEncodedPassword)) {
+            throw new CannotChangeSamePasswordException();
         }
     }
 }

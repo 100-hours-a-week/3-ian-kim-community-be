@@ -14,6 +14,7 @@ public enum ApiErrorCode {
     METHOD_ARGUMENT_TYPE_MISMATCH("4004", "요청 파라미터의 타입이 올바르지 않습니다."),
     CONSTRAINT_VIOLATION("4005", "요청 파라미터의 값이 올바르지 않습니다."),
     INVALID_SORT_PROPERTY("4006", "정렬 기준이 올바르지 않습니다."),
+    CANNOT_CHANGE_SAME_PASSWORD("4007", "이전 비밀번호와 동일할 수 없습니다."),
 
     // 401 Unauthorized
     INVALID_CREDENTIALS("4011", "아이디 또는 비밀번호가 틀렸습니다."),
