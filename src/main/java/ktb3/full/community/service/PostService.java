@@ -71,9 +71,4 @@ public class PostService {
             post.updateImage(imageName, request.getImage().getOriginalFilename());
         }
     }
-
-    @Transactional
-    public void deleteAllPostByUserId(long userId) {
-        postRepository.deleteAllByUserId(userId);
-    }
 }
