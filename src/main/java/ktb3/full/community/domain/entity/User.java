@@ -22,7 +22,7 @@ public class User extends AuditTime {
     @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @Column(name = "nickname", nullable = false, unique = true, columnDefinition = "CHAR(10)")
+    @Column(name = "nickname", nullable = false, unique = true, length = 10)
     private String nickname;
 
     @Column(name = "profile_image_name", nullable = false, unique = true, length = 255)
