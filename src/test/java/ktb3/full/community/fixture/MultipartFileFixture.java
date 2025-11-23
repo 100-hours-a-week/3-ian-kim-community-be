@@ -12,7 +12,7 @@ public class MultipartFileFixture {
         return new MockMultipartFile("profileImage", new byte[]{});
     }
 
-    public static MockMultipartFile createImage(String name) {
+    public static MockMultipartFile createProfileImage(String name) {
         return new MockMultipartFile(name, new byte[]{});
     }
 }
