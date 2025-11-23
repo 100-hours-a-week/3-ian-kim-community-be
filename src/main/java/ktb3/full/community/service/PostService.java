@@ -8,6 +8,7 @@ import ktb3.full.community.dto.request.PostCreateRequest;
 import ktb3.full.community.dto.request.PostUpdateRequest;
 import ktb3.full.community.dto.response.PostDetailResponse;
 import ktb3.full.community.dto.response.PostResponse;
+import ktb3.full.community.repository.PostLikeRepository;
 import ktb3.full.community.repository.PostRepository;
 import ktb3.full.community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final PostLikeService postLikeService;
+    private final PostLikeRepository postLikeRepository;
     private final ImageUploadService imageUploadService;
 
     public PagedModel<PostResponse> getAllPosts(Pageable pageable) {
@@ -38,8 +39,8 @@ public class PostService {
     public PostDetailResponse getPost(long userId, long postId) {
         postRepository.increaseViewCount(postId);
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        boolean liked = postLikeService.isLiked(userId, postId);
-        return PostDetailResponse.from(post, liked);
+        boolean isLiked = postLikeRepository.existsAndLiked(userId, postId).orElse(false);
+        return PostDetailResponse.from(post, isLiked);
     }
 
     @Transactional

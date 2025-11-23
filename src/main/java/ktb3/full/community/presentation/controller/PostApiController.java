@@ -12,7 +12,7 @@ import ktb3.full.community.dto.response.PostLikeRespnose;
 import ktb3.full.community.dto.response.PostResponse;
 import ktb3.full.community.presentation.api.PostApi;
 import ktb3.full.community.service.PostDeleteService;
-import ktb3.full.community.service.PostLikeCreateOrUpdateService;
+import ktb3.full.community.service.PostLikeService;
 import ktb3.full.community.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +31,7 @@ public class PostApiController implements PostApi {
 
     private final PostService postService;
     private final PostDeleteService postDeleteService;
-    private final PostLikeCreateOrUpdateService postLikeCreateOrUpdateService;
+    private final PostLikeService postLikeService;
 
     @GetMapping
     public ResponseEntity<ApiSuccessResponse<PagedModel<PostResponse>>> getAllPosts(@Valid Pageable pageable) {
@@ -80,7 +80,7 @@ public class PostApiController implements PostApi {
     public ResponseEntity<ApiSuccessResponse<PostLikeRespnose>> likePost(
             @AuthenticationPrincipal AuthUserDetails userDetails,
             @Positive @PathVariable("postId") long postId) {
-        PostLikeRespnose postLikeRespnose = postLikeCreateOrUpdateService.createOrUpdate(userDetails.getUserId(), postId);
+        PostLikeRespnose postLikeRespnose = postLikeService.createOrUpdate(userDetails.getUserId(), postId);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.of(postLikeRespnose));
     }
