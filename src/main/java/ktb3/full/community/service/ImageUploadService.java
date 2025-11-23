@@ -24,7 +24,7 @@ public class ImageUploadService {
         String imageName = null;
 
         if (image != null) {
-            imageName = this.fileImagePath + "/" + UUID.randomUUID();
+            imageName = this.fileImagePath + "/" + UUID.randomUUID() + "_" + image.getOriginalFilename();;
             Path path = Paths.get(this.fileBasePath + imageName);
             try {
                 Files.createDirectories(path.getParent());
