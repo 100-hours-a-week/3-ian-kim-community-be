@@ -48,4 +48,8 @@ public class UserFixture {
     public static User createDeletedWithEmail(String email) {
         return createUser(email, null, null, null, true);
     }
+
+    public static User createWithUnique(String email, String nickname, String profileImageName) {
+        return createUser(email, null, nickname, profileImageName, false);
+    }
 }
