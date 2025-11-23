@@ -23,13 +23,13 @@ public class CommentResponse {
     private final long postId;
 
     @Schema(description = "작성자 ID", example = "1")
-    private final Long userId;
+    private final Long authorId;
 
     @Schema(description = "작성자 닉네임", example = "testNick")
     private final String authorNickname;
 
     @Schema(description = "작성자 프로필", example = "https://test.kr/test.jpg")
-    private final String authorProfile;
+    private final String authorProfileImageName;
 
     @Schema(description = "내용", example = "테스트 댓글입니다.")
     private final String content;
@@ -42,9 +42,9 @@ public class CommentResponse {
         return builder()
                 .commentId(comment.getId())
                 .postId(comment.getPost().getId())
-                .userId(AccountValidator.getUserId(comment.getUser()))
+                .authorId(AccountValidator.getUserId(comment.getUser()))
                 .authorNickname(AccountValidator.getAuthorName(comment.getUser()))
-                .authorProfile(AccountValidator.getAuthorProfileImageName(comment.getUser()))
+                .authorProfileImageName(AccountValidator.getAuthorProfileImageName(comment.getUser()))
                 .content(comment.getContent())
                 .createdDate(comment.getCreatedAt())
                 .build();
