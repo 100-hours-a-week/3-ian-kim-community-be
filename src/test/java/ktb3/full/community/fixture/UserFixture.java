@@ -44,4 +44,8 @@ public class UserFixture {
         ReflectionTestUtils.setField(user, "id", id);
         return user;
     }
+
+    public static User createDeletedWithEmail(String email) {
+        return createUser(email, null, null, null, true);
+    }
 }
