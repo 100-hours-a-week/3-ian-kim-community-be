@@ -68,9 +68,4 @@ public class CommentService {
         Post post = postRepository.findByIdForUpdate(comment.getPost().getId()).orElseThrow(PostNotFoundException::new);
         post.decreaseCommentCount();
     }
-
-    @Transactional
-    public void deleteAllCommentByPostId(long postId) {
-        commentRepository.deleteAllByPostId(postId);
-    }
 }

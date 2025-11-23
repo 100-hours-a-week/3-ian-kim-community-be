@@ -2,6 +2,7 @@ package ktb3.full.community.service;
 
 import ktb3.full.community.common.exception.PostNotFoundException;
 import ktb3.full.community.domain.entity.Post;
+import ktb3.full.community.repository.CommentRepository;
 import ktb3.full.community.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostDeleteService {
 
     private final PostRepository postRepository;
-    private final CommentService commentService;
+    private final CommentRepository commentRepository;
 
     @PreAuthorize("@postRepository.findById(#postId).get().getUser().getId() == principal.userId")
     @Transactional
@@ -21,6 +22,6 @@ public class PostDeleteService {
         // soft delete
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         post.delete();
-        commentService.deleteAllCommentByPostId(postId);
+        commentRepository.deleteAllByPostId(postId);
     }
 }
