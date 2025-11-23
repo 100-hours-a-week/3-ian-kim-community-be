@@ -1,6 +1,14 @@
 package ktb3.full.community.service;
 
+import ktb3.full.community.common.exception.PostNotFoundException;
+import ktb3.full.community.common.exception.UserNotFoundException;
+import ktb3.full.community.domain.entity.Post;
+import ktb3.full.community.domain.entity.PostLike;
+import ktb3.full.community.domain.entity.User;
+import ktb3.full.community.dto.response.PostLikeRespnose;
 import ktb3.full.community.repository.PostLikeRepository;
+import ktb3.full.community.repository.PostRepository;
+import ktb3.full.community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,9 +19,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostLikeService {
 
     private final PostLikeRepository postLikeRepository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
-    public boolean isLiked(Long userId, Long postId) {
-        return postLikeRepository.existsAndLiked(userId, postId)
-                .orElse(false);
+    @Transactional
+    public PostLikeRespnose createOrUpdate(long userId, long postId) {
+        Post post = postRepository.findByIdForUpdate(postId).orElseThrow(PostNotFoundException::new);
+
+        PostLike postLike = postLikeRepository.findByUserIdAndPostId(userId, postId)
+                .orElseGet(() -> {
+                    User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+                    return postLikeRepository.save(PostLike.create(user, post));
+                });
+
+        postLike.toggle();
+
+        return new PostLikeRespnose(postLike.isLiked(), post.getLikeCount());
     }
 }
