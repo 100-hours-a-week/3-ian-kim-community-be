@@ -23,13 +23,13 @@ public class PostDetailResponse {
     private final String title;
 
     @Schema(description = "작성자 ID", example = "1")
-    private final Long userId;
+    private final Long authorId;
 
     @Schema(description = "작성자 닉네임", example = "testNick")
     private final String authorNickname;
 
     @Schema(description = "작성자 프로필", example = "https://test.kr/test.jpg")
-    private final String authorProfile;
+    private final String authorProfileImageName;
 
     @Schema(description = "내용", example = "테스트 게시글입니다.")
     private final String content;
@@ -64,9 +64,9 @@ public class PostDetailResponse {
         return builder()
                 .postId(post.getId())
                 .title(post.getTitle())
-                .userId(AccountValidator.getUserId(post.getUser()))
+                .authorId(AccountValidator.getUserId(post.getUser()))
                 .authorNickname(AccountValidator.getAuthorName(post.getUser()))
-                .authorProfile(AccountValidator.getAuthorProfileImageName(post.getUser()))
+                .authorProfileImageName(AccountValidator.getAuthorProfileImageName(post.getUser()))
                 .content(post.getContent())
                 .imageName(post.getImageName())
                 .originImageName(post.getOriginImageName())
