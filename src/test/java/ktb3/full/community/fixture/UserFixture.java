@@ -31,10 +31,6 @@ public class UserFixture {
         return createUser(null, password, null, null, false);
     }
 
-    public static User createWithEmailAndNickname(String email, String nickname) {
-        return createUser(email, null, nickname, null, false);
-    }
-
     public static User createWithNicknameAndProfileImageName(String nickname, String profileImageName) {
         return createUser(null, null, nickname, profileImageName, false);
     }

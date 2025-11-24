@@ -72,8 +72,6 @@ public class UserServiceConcurrentTest {
             assertThat(userRepository.findAll().stream()
                     .filter(user -> "dupName".equals(user.getNickname()))
                     .count()).isEqualTo(1);
-
-            System.out.println("테스트 종료");
         }
     }
 
