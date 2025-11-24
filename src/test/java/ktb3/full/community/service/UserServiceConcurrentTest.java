@@ -7,7 +7,7 @@ import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.fixture.MultipartFileFixture;
 import ktb3.full.community.fixture.UserFixture;
 import ktb3.full.community.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ public class UserServiceConcurrentTest {
     @Autowired
     private UserService userService;
 
-    @BeforeEach
-    public void setup() {
+    @AfterEach
+    void tearDown() {
         userRepository.deleteAll();
     }
 
