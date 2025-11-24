@@ -48,17 +48,20 @@ public class Post extends AuditTime {
     private boolean isDeleted;
 
     public static Post create(User user, String title, String content, String originImageName, String imageName) {
+        return Post.create(user, title, content, originImageName, imageName, 0, 0, 0, false);
+    }
+
+    public static Post create(User user, String title, String content, String originImageName, String imageName, int viewCount, int commentCount, int likeCount, boolean isDeleted) {
         return Post.builder()
-                .id(null)
                 .user(user)
                 .title(title)
                 .content(content)
                 .originImageName(originImageName)
                 .imageName(imageName)
-                .likeCount(0)
-                .commentCount(0)
-                .viewCount(0)
-                .isDeleted(false)
+                .viewCount(viewCount)
+                .commentCount(commentCount)
+                .likeCount(likeCount)
+                .isDeleted(isDeleted)
                 .build();
     }
 
@@ -80,6 +83,10 @@ public class Post extends AuditTime {
     }
 
     public void decreaseLikeCount() {
+        if (this.likeCount <= 0) {
+            throw new IllegalStateException("좋아요수는 음수가 될 수 없습니다.");
+        }
+
         this.likeCount--;
     }
 
@@ -88,6 +95,10 @@ public class Post extends AuditTime {
     }
 
     public void decreaseCommentCount() {
+        if (this.commentCount <= 0) {
+            throw new IllegalStateException("댓글수는 음수가 될 수 없습니다.");
+        }
+
         this.commentCount--;
     }
 
