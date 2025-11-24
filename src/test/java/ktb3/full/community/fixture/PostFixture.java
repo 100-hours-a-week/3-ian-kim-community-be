@@ -5,6 +5,7 @@ import ktb3.full.community.domain.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class PostFixture {
 
@@ -26,12 +27,24 @@ public class PostFixture {
         return createPost(user, null, null, null, null, 0, 0, 0, false);
     }
 
-    public static List<Post> createPosts(User user, int count) {
+    public static List<Post> createPosts(int count, Supplier<Post> supplier) {
         List<Post> posts =  new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            posts.add(PostFixture.createPost(user));
+            posts.add(supplier.get());
         }
         return posts;
+    }
+
+    public static List<Post> createPosts(User user, int count) {
+        return createPosts(count, () -> PostFixture.createPost(user));
+    }
+
+    public static List<Post> createDeletedPosts(User user, int count) {
+        return createPosts(count, () -> PostFixture.createDeleted(user));
+    }
+
+    public static List<Post> createWithoutUserPosts(int count) {
+        return createPosts(count, PostFixture::createWithoutUser);
     }
 
     public static Post createWithLikeCount(User user, int likeCount) {
@@ -40,5 +53,17 @@ public class PostFixture {
 
     public static Post createWithCommentCount(User user, int commentCount) {
         return createPost(user, null, null, null, null, 0, commentCount, 0, false);
+    }
+
+    public static Post createWithViewCount(User user, int viewCount) {
+        return createPost(user, null, null, null, null, viewCount, 0, 0, false);
+    }
+
+    public static Post createDeleted(User user) {
+        return createPost(user, null, null, null, null, 0, 0, 0, true);
+    }
+
+    public static Post createWithoutUser() {
+        return createPost(null, null, null, null, null, 0, 0, 0, false);
     }
 }
