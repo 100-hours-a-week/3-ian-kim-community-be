@@ -7,6 +7,7 @@ import ktb3.full.community.config.WithAuthMockUser;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.response.UserAccountResponse;
+import ktb3.full.community.dto.response.UserAccountUpdateResponse;
 import ktb3.full.community.fixture.MultipartFileFixture;
 import ktb3.full.community.service.UserDeleteService;
 import ktb3.full.community.service.UserService;
@@ -84,7 +85,8 @@ class AuthenticatedUserApiControllerTest {
         @Test
         void 회원정보수정에_성공하면_200_Ok를_응답한다() throws Exception {
             // given
-            willDoNothing().given(userService).updateAccount(any(Long.class), any(UserAccountUpdateRequest.class));
+            UserAccountUpdateResponse response = new UserAccountUpdateResponse("profileImageName");
+            given(userService.updateAccount(any(Long.class), any(UserAccountUpdateRequest.class))).willReturn(response);
 
             // when
             ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, TARGET_URI)
@@ -94,7 +96,8 @@ class AuthenticatedUserApiControllerTest {
 
             // then
             resultActions
-                    .andExpect(status().isOk());
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.profileImageName").value("profileImageName"));
         }
 
         @Test
