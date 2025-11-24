@@ -48,4 +48,8 @@ public class UserFixture {
     public static User createWithUnique(String email, String nickname, String profileImageName) {
         return createUser(email, null, nickname, profileImageName, false);
     }
+
+    public static User createWithEmailAndPassword(String email, String password) {
+        return createUser(email, password, null, null, false);
+    }
 }
