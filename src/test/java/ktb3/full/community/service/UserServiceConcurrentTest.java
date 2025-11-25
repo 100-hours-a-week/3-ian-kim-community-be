@@ -2,6 +2,7 @@ package ktb3.full.community.service;
 
 import ktb3.full.community.config.ImageUploadServiceStubConfig;
 import ktb3.full.community.config.JpaTest;
+import ktb3.full.community.config.UserServiceTestConfig;
 import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
@@ -24,7 +25,7 @@ import java.util.concurrent.Executors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED;
 
-@Import({UserService.class, ImageUploadServiceStubConfig.class, PasswordEncoderConfig.class})
+@Import({UserServiceTestConfig.class})
 @JpaTest
 public class UserServiceConcurrentTest {
 
