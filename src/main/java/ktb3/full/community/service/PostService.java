@@ -69,7 +69,7 @@ public class PostService {
 
         if (request.getImage() != null) {
             String imageName = imageUploadService.saveImageAndGetName(request.getImage());
-            post.updateImage(imageName, request.getImage().getOriginalFilename());
+            post.updateImage(request.getImage().getOriginalFilename(), imageName);
         }
     }
 }
