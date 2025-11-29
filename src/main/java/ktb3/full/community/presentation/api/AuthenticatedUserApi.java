@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
@@ -15,6 +17,7 @@ import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.dto.response.UserAccountUpdateResponse;
 import ktb3.full.community.security.userdetails.AuthUserDetails;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,5 +63,9 @@ public interface AuthenticatedUserApi {
             @ApiResponse(responseCode = "401", description = "인증 필요",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(@AuthenticationPrincipal AuthUserDetails userDetails);
+    ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(
+            @AuthenticationPrincipal AuthUserDetails userDetails,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication);
 }

@@ -1,8 +1,11 @@
 package ktb3.full.community.presentation.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import ktb3.full.community.dto.response.UserAccountUpdateResponse;
 import ktb3.full.community.security.userdetails.AuthUserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
@@ -13,6 +16,7 @@ import ktb3.full.community.service.UserDeleteService;
 import ktb3.full.community.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -49,8 +53,14 @@ public class AuthenticatedUserApiController implements AuthenticatedUserApi {
     }
 
     @DeleteMapping
-    public ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(@AuthenticationPrincipal AuthUserDetails userDetails) {
+    public ResponseEntity<ApiSuccessResponse<Void>> deleteUserAccount(
+            @AuthenticationPrincipal AuthUserDetails userDetails,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication) {
+
         userDeleteService.deleteAccount(userDetails.getUserId());
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
         return ResponseEntity.ok()
                 .body(ApiSuccessResponse.getBaseResponse());
     }
