@@ -54,7 +54,7 @@ public class PostService {
         return PostDetailResponse.from(post, false).getPostId();
     }
 
-    @PreAuthorize("@postRepository.findByIdActive(#postId).get().getUser().getId() == principal.userId")
+    @PreAuthorize("@postPermissionService.isOwner(#postId, principal)")
     @Transactional
     public void updatePost(long postId, PostUpdateRequest request) {
         Post post = postRepository.findByIdActive(postId).orElseThrow(PostNotFoundException::new);

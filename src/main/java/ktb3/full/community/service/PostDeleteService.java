@@ -16,7 +16,7 @@ public class PostDeleteService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    @PreAuthorize("@postRepository.findByIdActive(#postId).get().getUser().getId() == principal.userId")
+    @PreAuthorize("@postPermissionService.isOwner(#postId, principal)")
     @Transactional
     public void deletePost(long postId) {
         // soft delete

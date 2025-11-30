@@ -35,7 +35,7 @@ public class CommentService {
     }
 
     public CommentResponse getComment(long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+        Comment comment = commentRepository.findByIdActive(commentId).orElseThrow(CommentNotFoundException::new);
         return CommentResponse.from(comment);
     }
 
@@ -49,21 +49,21 @@ public class CommentService {
         return CommentResponse.from(comment);
     }
 
-    @PreAuthorize("@commentRepository.findById(#commentId).get().getUser().getId() == principal.userId")
+    @PreAuthorize("@commentPermissionService.isOwner(#commentId, principal)")
     @Transactional
     public void updateComment(long commentId, CommentUpdateRequest request) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+        Comment comment = commentRepository.findByIdActive(commentId).orElseThrow(CommentNotFoundException::new);
 
         if (request.getContent() != null) {
             comment.updateContent(request.getContent());
         }
     }
 
-    @PreAuthorize("@commentRepository.findById(#commentId).get().getUser().getId() == principal.userId")
+    @PreAuthorize("@commentPermissionService.isOwner(#commentId, principal)")
     @Transactional
     public void deleteComment(long commentId) {
         // soft delete
-        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+        Comment comment = commentRepository.findByIdActive(commentId).orElseThrow(CommentNotFoundException::new);
         comment.delete();
         Post post = postRepository.findByIdForUpdate(comment.getPost().getId()).orElseThrow(PostNotFoundException::new);
         post.decreaseCommentCount();
