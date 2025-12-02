@@ -11,10 +11,28 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class PostTest {
 
     @Nested
+    class create {
+
+        @Test
+        void 게시글_생성_시_좋아요수_댓글수_조회수는_0이다() {
+            // given
+            User user = UserFixture.createUser();
+
+            // when
+            Post post = Post.create(user, "title", "content");
+
+            // then
+            assertThat(post.getViewCount()).isZero();
+            assertThat(post.getCommentCount()).isZero();
+            assertThat(post.getLikeCount()).isZero();
+        }
+    }
+
+    @Nested
     class decreaseLikeCount {
 
         @Test
-        void 좋아요수가_양수면_1만큼_감소한다() {
+        void 좋아요수가_1_감소한다() {
             // given
             User user = UserFixture.createUser();
             Post post = PostFixture.createWithLikeCount(user, 1);
@@ -23,18 +41,21 @@ class PostTest {
             post.decreaseLikeCount();
 
             // then
-            assertThat(post.getLikeCount()).isEqualTo(0);
+            assertThat(post.getLikeCount()).isZero();
         }
 
         @Test
-        void 좋아요수가_음수가_되면_예외가_발생한다() {
+        void 좋아요수가_0일_때_감소시키면_예외가_발생한다() {
             // given
             User user = UserFixture.createUser();
             Post post = PostFixture.createWithLikeCount(user, 0);
 
             // when & then
-            assertThatThrownBy(post::decreaseLikeCount);
-            assertThat(post.getLikeCount()).isEqualTo(0);
+            assertThatThrownBy(post::decreaseLikeCount)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("좋아요수는 음수가 될 수 없습니다.");
+
+            assertThat(post.getLikeCount()).isZero();
         }
     }
 
@@ -42,7 +63,7 @@ class PostTest {
     class decreaseCommentCount {
 
         @Test
-        void 댓글수가_양수면_1만큼_감소한다() {
+        void 댓글수가_1_감소한다() {
             // given
             User user = UserFixture.createUser();
             Post post = PostFixture.createWithCommentCount(user, 1);
@@ -51,18 +72,21 @@ class PostTest {
             post.decreaseCommentCount();
 
             // then
-            assertThat(post.getCommentCount()).isEqualTo(0);
+            assertThat(post.getCommentCount()).isZero();
         }
 
         @Test
-        void 댓글수가_음수가_되면_예외가_발생한다() {
+        void 댓글수가_0일_때_감소시키면_예외가_발생한다() {
             // given
             User user = UserFixture.createUser();
             Post post = PostFixture.createWithCommentCount(user, 0);
 
             // when & then
-            assertThatThrownBy(post::decreaseCommentCount);
-            assertThat(post.getCommentCount()).isEqualTo(0);
+            assertThatThrownBy(post::decreaseCommentCount)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("댓글수는 음수가 될 수 없습니다.");;
+
+            assertThat(post.getCommentCount()).isZero();
         }
     }
 }
