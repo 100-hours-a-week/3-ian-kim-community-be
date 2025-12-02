@@ -1,0 +1,10 @@
+SET REFERENTIAL_INTEGRITY FALSE;
+truncate table comment;
+truncate table post_like;
+truncate table post;
+truncate table user_account;
+ALTER TABLE user_account ALTER COLUMN user_id RESTART WITH 1;
+ALTER TABLE post ALTER COLUMN post_id RESTART WITH 1;
+ALTER TABLE comment ALTER COLUMN comment_id RESTART WITH 1;
+ALTER TABLE post_like ALTER COLUMN post_like_id RESTART WITH 1;
+SET REFERENTIAL_INTEGRITY TRUE;

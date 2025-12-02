@@ -67,7 +67,7 @@ public class PostFixture {
         return createPost(null, null, null, null, null, 0, 0, 0, false);
     }
 
-    public static Post createForUpdate(String title, String content, String originImageName, String imageName) {
-        return createPost(null, title, content, originImageName, imageName, 0, 0, 0, false);
+    public static Post createForUpdate(User user, String title, String content, String originImageName, String imageName) {
+        return createPost(user, title, content, originImageName, imageName, 0, 0, 0, false);
     }
 }

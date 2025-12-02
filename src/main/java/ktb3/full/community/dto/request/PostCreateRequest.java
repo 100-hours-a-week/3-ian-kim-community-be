@@ -6,6 +6,7 @@ import ktb3.full.community.common.annotation.constraint.PostContentPattern;
 import ktb3.full.community.common.annotation.constraint.PostTitlePattern;
 import ktb3.full.community.domain.entity.Post;
 import ktb3.full.community.domain.entity.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import static ktb3.full.community.common.Constants.MESSAGE_NOT_NULL_POST_TITLE;
 
 @Schema(title = "게시글 생성 요청 DTO")
 @Getter
+@Builder
 @RequiredArgsConstructor
 public class PostCreateRequest {
 
