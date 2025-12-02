@@ -32,5 +32,12 @@ public class PostLikeService {
                 });
 
         postLike.toggle();
+
+        if (postLike.isLiked()) {
+            post.increaseLikeCount();
+            return;
+        }
+
+        post.decreaseLikeCount();
     }
 }

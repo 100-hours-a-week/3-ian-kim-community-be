@@ -46,7 +46,7 @@ public class PostLike {
         return PostLike.builder()
                 .user(user)
                 .post(post)
-                .isLiked(false)
+                .isLiked(true)
                 .build();
     }
 
@@ -59,11 +59,5 @@ public class PostLike {
 
     public void toggle() {
         this.isLiked = !this.isLiked;
-
-        if (this.isLiked) {
-            post.increaseLikeCount();
-        } else {
-            post.decreaseLikeCount();
-        }
     }
 }
