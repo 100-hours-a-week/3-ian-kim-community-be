@@ -6,13 +6,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 public class UserFixture {
 
     public static User createUser(String email, String password, String nickname, String profileImageName, boolean isDeleted) {
-        return User.create(
-                email == null ? "email@example.com" : email,
-                password == null ? "Password123!" : password,
-                nickname == null ? "name" : nickname,
-                profileImageName == null ? "/images/profile.png" : profileImageName,
-                isDeleted
-        );
+        return User.builder()
+                .email(email == null ? "email@example.com" : email)
+                .password(password == null ? "Password123!" : password)
+                .nickname(nickname == null ? "name" : nickname)
+                .profileImageName(profileImageName == null ? "/images/profile.png" : profileImageName)
+                .isDeleted(isDeleted)
+                .build();
     }
 
     public static User createUser() {

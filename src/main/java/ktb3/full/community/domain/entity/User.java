@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_account")
 @Entity
@@ -31,14 +29,27 @@ public class User extends AuditTime {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    public static User create(String email, String password, String nickname, String profileImageName, boolean isDeleted) {
+    public static User create(String email, String password, String nickname, String profileImageName) {
         return User.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
                 .profileImageName(profileImageName)
-                .isDeleted(isDeleted)
+                .isDeleted(false)
                 .build();
+    }
+
+    public static User create(String email, String password, String nickname) {
+        return User.create(email, password, nickname, null);
+    }
+
+    @Builder
+    private User(String email, String password, String nickname, String profileImageName, boolean isDeleted) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.profileImageName = profileImageName;
+        this.isDeleted = isDeleted;
     }
 
     public void updateNickname(String nickname) {

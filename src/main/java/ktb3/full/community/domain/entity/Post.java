@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @NamedQuery(
         name = "Post.findByIdActive",
@@ -47,22 +45,35 @@ public class Post extends AuditTime {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 
-    public static Post create(User user, String title, String content, String originImageName, String imageName) {
-        return Post.create(user, title, content, originImageName, imageName, 0, 0, 0, false);
+    public static Post create(User user, String title, String content) {
+        return Post.create(user, title, content, null, null);
     }
 
-    public static Post create(User user, String title, String content, String originImageName, String imageName, int viewCount, int commentCount, int likeCount, boolean isDeleted) {
+    public static Post create(User user, String title, String content, String originImageName, String imageName) {
         return Post.builder()
                 .user(user)
                 .title(title)
                 .content(content)
                 .originImageName(originImageName)
                 .imageName(imageName)
-                .viewCount(viewCount)
-                .commentCount(commentCount)
-                .likeCount(likeCount)
-                .isDeleted(isDeleted)
+                .viewCount(0)
+                .commentCount(0)
+                .likeCount(0)
+                .isDeleted(false)
                 .build();
+    }
+
+    @Builder
+    private Post(User user, String title, String content, String originImageName, String imageName, int viewCount, int commentCount, int likeCount, boolean isDeleted) {
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.originImageName = originImageName;
+        this.imageName = imageName;
+        this.viewCount = viewCount;
+        this.commentCount = commentCount;
+        this.likeCount = likeCount;
+        this.isDeleted = isDeleted;
     }
 
     public void updateTitle(String title) {

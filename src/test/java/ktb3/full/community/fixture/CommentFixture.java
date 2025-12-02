@@ -10,11 +10,11 @@ import java.util.List;
 public class CommentFixture {
 
     public static Comment createComment(User user, Post post, String content) {
-        return Comment.create(
-                user,
-                post,
-                content == null ? "this is comment content" : content
-        );
+        return Comment.builder()
+                .user(user)
+                .post(post)
+                .content(content == null ? "this is comment content" : content)
+                .build();
     }
 
     public static Comment createComment(User user, Post post) {

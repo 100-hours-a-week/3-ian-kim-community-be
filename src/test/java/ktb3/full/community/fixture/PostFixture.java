@@ -10,17 +10,17 @@ import java.util.function.Supplier;
 public class PostFixture {
 
     public static Post createPost(User user, String title, String content, String originImageName, String imageName, int viewCount, int commentCount, int likeCount, boolean isDeleted) {
-        return Post.create(
-                user,
-                title == null ? "Post Title" : title,
-                content == null ? "this is post content" : content,
-                originImageName,
-                imageName,
-                viewCount,
-                commentCount,
-                likeCount,
-                isDeleted
-        );
+        return Post.builder()
+                .user(user)
+                .title(title == null ? "Post Title" : title)
+                .content(content == null ? "this is post content" : content)
+                .originImageName(originImageName)
+                .imageName(imageName)
+                .viewCount(viewCount)
+                .commentCount(commentCount)
+                .likeCount(likeCount)
+                .isDeleted(isDeleted)
+                .build();
     }
 
     public static Post createPost(User user) {
@@ -65,5 +65,9 @@ public class PostFixture {
 
     public static Post createWithoutUser() {
         return createPost(null, null, null, null, null, 0, 0, 0, false);
+    }
+
+    public static Post createForUpdate(String title, String content, String originImageName, String imageName) {
+        return createPost(null, title, content, originImageName, imageName, 0, 0, 0, false);
     }
 }

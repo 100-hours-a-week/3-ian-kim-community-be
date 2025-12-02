@@ -8,8 +8,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Table(
@@ -50,6 +48,13 @@ public class PostLike {
                 .post(post)
                 .isLiked(false)
                 .build();
+    }
+
+    @Builder
+    private PostLike(User user, Post post, boolean isLiked) {
+        this.user = user;
+        this.post = post;
+        this.isLiked = isLiked;
     }
 
     public void toggle() {

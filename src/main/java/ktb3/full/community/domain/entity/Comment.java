@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Comment extends AuditTime {
@@ -31,12 +29,19 @@ public class Comment extends AuditTime {
 
     public static Comment create(User user, Post post, String content) {
         return Comment.builder()
-                .id(null)
                 .user(user)
                 .post(post)
                 .content(content)
                 .isDeleted(false)
                 .build();
+    }
+
+    @Builder
+    private Comment(User user, Post post, String content, boolean isDeleted) {
+        this.user = user;
+        this.post = post;
+        this.content = content;
+        this.isDeleted = isDeleted;
     }
 
     public void updateContent(String content) {
