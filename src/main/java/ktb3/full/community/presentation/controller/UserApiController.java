@@ -22,20 +22,6 @@ public class UserApiController implements UserApi {
 
     private final UserService userService;
 
-    @GetMapping("/email-validation")
-    public ResponseEntity<ApiResponse<UserValidationResponse>> validateEmailAvailable(@RequestParam("email") String email) {
-        UserValidationResponse userValidationResponse = userService.validateEmailAvailable(email);
-        return ResponseEntity.ok()
-                .body(ApiResponse.success(userValidationResponse));
-    }
-
-    @GetMapping("/nickname-validation")
-    public ResponseEntity<ApiResponse<UserValidationResponse>> validateNicknameAvailable(@RequestParam("nickname") String nickname) {
-        UserValidationResponse userValidationResponse = userService.validateNicknameAvailable(nickname);
-        return ResponseEntity.ok()
-                .body(ApiResponse.success(userValidationResponse));
-    }
-
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> signUp(@Valid @ModelAttribute UserRegisterRequest userRegisterRequest) {
         long userId = userService.register(userRegisterRequest);

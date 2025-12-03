@@ -6,7 +6,6 @@ import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.UserAccountUpdateResponse;
-import ktb3.full.community.dto.response.UserValidationResponse;
 import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +21,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final ImageUploadService imageUploadService;
     private final PasswordEncoder passwordEncoder;
-
-    public UserValidationResponse validateEmailAvailable(String email) {
-        return new UserValidationResponse(!userRepository.existsByEmail(email));
-    }
-
-    public UserValidationResponse validateNicknameAvailable(String nickname) {
-        return new UserValidationResponse(!userRepository.existsByNickname(nickname));
-    }
 
     @Transactional
     public long register(UserRegisterRequest request) {

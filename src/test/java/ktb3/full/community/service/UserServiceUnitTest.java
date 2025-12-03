@@ -9,7 +9,6 @@ import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
-import ktb3.full.community.dto.response.UserValidationResponse;
 import ktb3.full.community.fixture.MultipartFileFixture;
 import ktb3.full.community.fixture.UserFixture;
 import ktb3.full.community.repository.UserRepository;
@@ -41,62 +40,6 @@ class UserServiceUnitTest {
 
     @InjectMocks
     private UserService userService;
-
-    @Nested
-    class validateEmailAvailable {
-
-        @Test
-        void 이메일이_존재하지_않으면_true를_반환한다() {
-            // given
-            given(userRepository.existsByEmail("email@example.com")).willReturn(false);
-
-            // when
-            UserValidationResponse response = userService.validateEmailAvailable("email@example.com");
-
-            // then
-            assertThat(response.isAvailable()).isTrue();
-        }
-
-        @Test
-        void 이메일이_이미_존재하면_false를_반환한다() {
-            // given
-            given(userRepository.existsByEmail("email@example.com")).willReturn(true);
-
-            // when
-            UserValidationResponse response = userService.validateEmailAvailable("email@example.com");
-
-            // then
-            assertThat(response.isAvailable()).isFalse();
-        }
-    }
-
-    @Nested
-    class validateNicknameAvailable {
-
-        @Test
-        void 닉네임이_존재하지_않으면_true를_반환한다() {
-            // given
-            given(userRepository.existsByNickname("name")).willReturn(false);
-
-            // when
-            UserValidationResponse response = userService.validateNicknameAvailable("name");
-
-            // then
-            assertThat(response.isAvailable()).isTrue();
-        }
-
-        @Test
-        void 닉네임이_이미_존재하면_false를_반환한다() {
-            // given
-            given(userRepository.existsByNickname("name")).willReturn(true);
-
-            // when
-            UserValidationResponse response = userService.validateNicknameAvailable("name");
-
-            // then
-            assertThat(response.isAvailable()).isFalse();
-        }
-    }
 
     @Nested
     class register {
