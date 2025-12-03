@@ -15,4 +15,8 @@ public class MultipartFileFixture {
     public static MockMultipartFile createProfileImage() {
         return new MockMultipartFile("profileImage", new byte[]{});
     }
+
+    public static MockMultipartFile createProfileImageWithOriginName(String originalFilename) {
+        return new MockMultipartFile("profileImage", originalFilename, "image", new byte[]{});
+    }
 }

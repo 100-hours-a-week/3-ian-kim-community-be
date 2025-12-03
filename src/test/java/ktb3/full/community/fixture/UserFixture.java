@@ -10,9 +10,17 @@ public class UserFixture {
                 .email(email == null ? "email@example.com" : email)
                 .password(password == null ? "Password123!" : password)
                 .nickname(nickname == null ? "name" : nickname)
-                .profileImageName(profileImageName == null ? "/images/profile.png" : profileImageName)
+                .profileImageName(profileImageName)
                 .isDeleted(isDeleted)
                 .build();
+    }
+
+    public static User createUser(String email, String nickname) {
+        return createUser(email, null, nickname, null, false);
+    }
+
+    public static User createUser(String email, String nickname, String profileImageName) {
+        return createUser(email, null, nickname, profileImageName, false);
     }
 
     public static User createUser() {
@@ -43,10 +51,6 @@ public class UserFixture {
 
     public static User createDeletedWithEmail(String email) {
         return createUser(email, null, null, null, true);
-    }
-
-    public static User createWithUnique(String email, String nickname, String profileImageName) {
-        return createUser(email, null, nickname, profileImageName, false);
     }
 
     public static User createWithEmailAndPassword(String email, String password) {
