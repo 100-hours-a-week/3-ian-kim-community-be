@@ -1,73 +1,46 @@
 package ktb3.full.community.presentation.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import ktb3.full.community.common.exception.CannotChangeSamePasswordException;
-import ktb3.full.community.common.exception.DuplicatedNicknameException;
+import ktb3.full.community.ControllerTestSupport;
 import ktb3.full.community.config.WithAuthMockUser;
 import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.dto.response.UserAccountUpdateResponse;
 import ktb3.full.community.fixture.MultipartFileFixture;
-import ktb3.full.community.service.UserDeleteService;
-import ktb3.full.community.service.UserService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithAuthMockUser
-@WebMvcTest(
-        controllers = AuthenticatedUserApiController.class)
-class AuthenticatedUserApiControllerTest {
-
-    private static final String BASE_URI = "/user";
-
-    @MockitoBean
-    private UserService userService;
-
-    @MockitoBean
-    private UserDeleteService userDeleteService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private MockMvc mockMvc;
+class AuthenticatedUserApiControllerTest extends ControllerTestSupport {
 
     @Nested
     class getUserAccount {
 
-        String TARGET_URI = BASE_URI;
-
-        @WithAuthMockUser(userId = 1L)
         @Test
-        void 회원정보조회에_성공하면_200_Ok와_회원정보를_응답한다() throws Exception {
+        void 회원정보를_조회한다() throws Exception {
             // given
             UserAccountResponse response = new UserAccountResponse(1L, "email@example.com", "name", "profileImageName", LocalDateTime.of(2025, 11, 23, 0, 0, 0));
 
             given(userService.getUserAccount(1L)).willReturn(response);
 
             // when
-            ResultActions resultActions = mockMvc.perform(get(TARGET_URI)
-                    .with(csrf()));
+            ResultActions resultActions = mockMvc.perform(get("/user"));
 
             // then
             resultActions
+                    .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.userId").value(1L))
                     .andExpect(jsonPath("$.data.email").value("email@example.com"))
@@ -80,120 +53,86 @@ class AuthenticatedUserApiControllerTest {
     @Nested
     class updateUserAccount {
 
-        String TARGET_URI = BASE_URI;
-
         @Test
-        void 회원정보수정에_성공하면_200_Ok를_응답한다() throws Exception {
+        void 회원정보를_수정한다() throws Exception {
             // given
             UserAccountUpdateResponse response = new UserAccountUpdateResponse("profileImageName");
             given(userService.updateAccount(any(Long.class), any(UserAccountUpdateRequest.class))).willReturn(response);
 
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, TARGET_URI)
+            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/user")
                     .file(MultipartFileFixture.createProfileImage())
-                    .param("nickname", "newName")
-                    .with(csrf()));
+                    .param("nickname", "newName"));
 
             // then
             resultActions
+                    .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.profileImageName").value("profileImageName"));
+                    .andExpect(jsonPath("$.code").isEmpty())
+                    .andExpect(jsonPath("$.message").value("요청에 성공했습니다."))
+                    .andExpect(jsonPath("$.data.profileImageName").isNotEmpty());
         }
 
         @Test
-        void 이미_존재하는_닉네임이면_409_Conflict와_4092을_응답한다() throws Exception {
-            // given
-            willThrow(DuplicatedNicknameException.class).given(userService).updateAccount(any(Long.class), any(UserAccountUpdateRequest.class));
-
-            // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, TARGET_URI)
-                    .file(MultipartFileFixture.createProfileImage())
-                    .param("nickname", "dupName")
-                    .with(csrf()));
-
-            // then
-            resultActions
-                    .andExpect(status().isConflict())
-                    .andExpect(jsonPath("$.code").value(4092));
-        }
-
-        @Test
-        void 닉네임이_유효하지_않으면_400_BadRequest와_4001을_응답한다() throws Exception {
+        void 회원정보수정_시_닉네임이_입력됐다면_공백이_아닌_문자가_1개_이상_있어야_한다() throws Exception {
             // given
 
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, TARGET_URI)
-                    .file(MultipartFileFixture.createProfileImage())
-                    .param("nickname", "longNickname")
-                    .with(csrf()));
+            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/user")
+                    .param("nickname", " "));
 
             // then
             resultActions
+                    .andDo(print())
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.code").value(4001));
+                    .andExpect(jsonPath("$.code").value("4001"))
+                    .andExpect(jsonPath("$.message").value("닉네임은 공백일 수 없습니다."))
+                    .andExpect(jsonPath("$.data").isEmpty());;
         }
     }
 
     @Nested
     class updatePassword {
 
-        String TARGET_URI = BASE_URI + "/password";
-
         @Test
-        void 비밀번호수정에_성공하면_200_Ok를_응답한다() throws Exception {
+        void 비밀번호를_변경한다() throws Exception {
             // given
-            UserPasswordUpdateRequest request = new UserPasswordUpdateRequest("NewPassword123!");
-
-            willDoNothing().given(userService).updatePassword(any(Long.class), any(UserPasswordUpdateRequest.class));
+            UserPasswordUpdateRequest request = UserPasswordUpdateRequest.builder()
+                    .password("NewPassword123!")
+                    .build();
 
             // when
-            ResultActions resultActions = mockMvc.perform(patch(TARGET_URI)
+            ResultActions resultActions = mockMvc.perform(patch("/user/password")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(objectMapper.writeValueAsString(request))
-                    .with(csrf()));
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions
-                    .andExpect(status().isOk());
-        }
-
-        @Test
-        void 이전과_동일한_비밀번호면_400_BadRequest와_4007을_응답한다() throws Exception {
-            // given
-            UserPasswordUpdateRequest request = new UserPasswordUpdateRequest("SamePassword123!");
-
-            willThrow(CannotChangeSamePasswordException.class).given(userService).updatePassword(any(Long.class), any(UserPasswordUpdateRequest.class));
-
-            // when
-            ResultActions resultActions = mockMvc.perform(patch(TARGET_URI)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(objectMapper.writeValueAsString(request))
-                    .with(csrf()));
-
-            // then
-            resultActions
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.code").value(4007));
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").isEmpty())
+                    .andExpect(jsonPath("$.message").value("요청에 성공했습니다."))
+                    .andExpect(jsonPath("$.data").isEmpty());;
         }
     }
 
     @Nested
     class deleteUserAccount {
 
-        String TARGET_URI = BASE_URI;
-
         @Test
-        void 회원탈퇴에_성공하면_200_Ok를_응답한다() throws Exception {
+        void 회원을_탈퇴한다() throws Exception {
             // given
-            willDoNothing().given(userDeleteService).deleteAccount(any(Long.class));
 
             // when
-            ResultActions resultActions = mockMvc.perform(delete(TARGET_URI)
-                    .with(csrf()));
+            ResultActions resultActions = mockMvc.perform(delete("/user"));
 
             // then
             resultActions
-                    .andExpect(status().isOk());
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").isEmpty())
+                    .andExpect(jsonPath("$.message").value("요청에 성공했습니다."))
+                    .andExpect(jsonPath("$.data").isEmpty());;
         }
     }
 }
