@@ -35,6 +35,8 @@ class UserDeleteServiceTest extends IntegrationTestSupport {
 
     @AfterEach
     void tearDown() {
+        commentRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
 
@@ -46,6 +48,9 @@ class UserDeleteServiceTest extends IntegrationTestSupport {
             // given
             int numPosts = 2;
             int numComments = 2;
+            userRepository.findAll().forEach(u -> {
+                System.out.println(u.getId() + " " + u.getEmail() + " " + u.getNickname());
+            });
 
             User user = userRepository.save(UserFixture.createUser());
             List<Post> posts = postRepository.saveAll(PostFixture.createPosts(user, numPosts));

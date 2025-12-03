@@ -11,6 +11,7 @@ import ktb3.full.community.fixture.UserFixture;
 import ktb3.full.community.repository.CommentRepository;
 import ktb3.full.community.repository.PostRepository;
 import ktb3.full.community.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,13 @@ class PostDeleteServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @AfterEach
+    void tearDown() {
+        commentRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+    }
 
     @Nested
     class deletePost {
