@@ -73,7 +73,7 @@ public class PostApiController implements PostApi {
                 .body(ApiResponse.success());
     }
 
-    @PatchMapping("/{postId}/like")
+    @PostMapping("/{postId}/like")
     public ResponseEntity<ApiResponse<Void>> likePost(
             @AuthenticationPrincipal AuthUserDetails userDetails,
             @Positive @PathVariable("postId") long postId) {
