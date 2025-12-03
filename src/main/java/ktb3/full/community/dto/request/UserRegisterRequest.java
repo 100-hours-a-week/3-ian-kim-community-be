@@ -6,7 +6,6 @@ import ktb3.full.community.domain.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import static ktb3.full.community.common.Constants.*;
 
@@ -28,10 +27,10 @@ public class UserRegisterRequest {
     @NotBlank(message = MESSAGE_NOT_NULL_NICKNAME)
     private final String nickname;
 
-    @Schema(description = "프로필 이미지", example = "https://test.kr/test.jpg")
-    private final MultipartFile profileImage;
+    @Schema(description = "프로필 이미지 파일명", example = "https://test.kr/test.jpg")
+    private final String profileImageName;
 
-    public User toUserEntity(String encodedPassword, String profileImageName) {
+    public User toUserEntity(String encodedPassword) {
         return User.create(email, encodedPassword, nickname, profileImageName);
     }
 }

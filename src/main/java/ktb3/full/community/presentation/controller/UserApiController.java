@@ -23,7 +23,7 @@ public class UserApiController implements UserApi {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> signUp(@Valid @ModelAttribute UserRegisterRequest userRegisterRequest) {
+    public ResponseEntity<ApiResponse<Void>> signUp(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
         long userId = userService.register(userRegisterRequest);
         return ResponseEntity.created(URI.create(String.format("/users/%d", userId)))
                 .body(ApiResponse.success());

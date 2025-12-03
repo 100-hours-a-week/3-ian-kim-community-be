@@ -62,6 +62,7 @@ class CommentApiControllerTest extends ControllerTestSupport {
             // given
             long userId = 1L;
             long postId = 1L;
+
             CommentCreateRequest request = CommentCreateRequest.builder()
                     .content("content")
                     .build();
@@ -91,6 +92,7 @@ class CommentApiControllerTest extends ControllerTestSupport {
         void 새_댓글_작성_시_내용에_공백이_아닌_문자가_1개_이상_있어야_한다() throws Exception {
             // given
             long postId = 1L;
+
             CommentCreateRequest request = CommentCreateRequest.builder()
                     .content(" ")
                     .build();

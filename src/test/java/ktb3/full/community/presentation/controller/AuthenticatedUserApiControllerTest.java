@@ -6,10 +6,8 @@ import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.dto.response.UserAccountUpdateResponse;
-import ktb3.full.community.fixture.MultipartFileFixture;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -56,13 +54,21 @@ class AuthenticatedUserApiControllerTest extends ControllerTestSupport {
         @Test
         void 회원정보를_수정한다() throws Exception {
             // given
-            UserAccountUpdateResponse response = new UserAccountUpdateResponse("profileImageName");
-            given(userService.updateAccount(any(Long.class), any(UserAccountUpdateRequest.class))).willReturn(response);
+            UserAccountUpdateRequest request = UserAccountUpdateRequest.builder()
+                    .nickname("newName")
+                    .profileImageName("newProfileImageName")
+                    .build();
+
+            UserAccountUpdateResponse result = UserAccountUpdateResponse.builder()
+                    .profileImageName("newProfileImageName")
+                    .build();
+
+            given(userService.updateAccount(any(Long.class), any(UserAccountUpdateRequest.class))).willReturn(result);
 
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/user")
-                    .file(MultipartFileFixture.createProfileImage())
-                    .param("nickname", "newName"));
+            ResultActions resultActions = mockMvc.perform(patch("/user")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions
@@ -70,16 +76,20 @@ class AuthenticatedUserApiControllerTest extends ControllerTestSupport {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.code").isEmpty())
                     .andExpect(jsonPath("$.message").value("요청에 성공했습니다."))
-                    .andExpect(jsonPath("$.data.profileImageName").isNotEmpty());
+                    .andExpect(jsonPath("$.data.profileImageName").value("newProfileImageName"));
         }
 
         @Test
         void 회원정보수정_시_닉네임이_입력됐다면_공백이_아닌_문자가_1개_이상_있어야_한다() throws Exception {
             // given
+            UserAccountUpdateRequest request = UserAccountUpdateRequest.builder()
+                    .nickname(" ")
+                    .build();
 
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/user")
-                    .param("nickname", " "));
+            ResultActions resultActions = mockMvc.perform(patch("/user")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions
@@ -112,6 +122,27 @@ class AuthenticatedUserApiControllerTest extends ControllerTestSupport {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.code").isEmpty())
                     .andExpect(jsonPath("$.message").value("요청에 성공했습니다."))
+                    .andExpect(jsonPath("$.data").isEmpty());;
+        }
+
+        @Test
+        void 비밀번호변경_시_공백이_아닌_문자가_1개_이상_있어야_한다() throws Exception {
+            // given
+            UserPasswordUpdateRequest request = UserPasswordUpdateRequest.builder()
+                    .password(" ")
+                    .build();
+
+            // when
+            ResultActions resultActions = mockMvc.perform(patch("/user/password")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
+
+            // then
+            resultActions
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value("4001"))
+                    .andExpect(jsonPath("$.message").value("비밀번호는 공백일 수 없습니다."))
                     .andExpect(jsonPath("$.data").isEmpty());;
         }
     }

@@ -47,7 +47,4 @@ public abstract class ControllerTestSupport {
 
     @MockitoBean
     protected PostLikeService postLikeService;
-
-    @MockitoBean
-    protected ImageUploadService imageUploadService;
 }

@@ -16,8 +16,8 @@ import ktb3.full.community.dto.response.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Post", description = "게시글 API")
 public interface PostApi {
@@ -52,7 +52,7 @@ public interface PostApi {
     })
     ResponseEntity<ApiResponse<Void>> createPost(
             @AuthenticationPrincipal AuthUserDetails userDetails,
-            @Valid @ModelAttribute PostCreateRequest request);
+            @Valid @RequestBody PostCreateRequest request);
 
     @Operation(summary = "게시글 수정", description = "ID를 이용해  게시글을 수정합니다.")
     @ApiResponses(value = {
@@ -68,7 +68,7 @@ public interface PostApi {
     })
     ResponseEntity<ApiResponse<Void>> updatePost(
             @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId,
-            @Valid @ModelAttribute PostUpdateRequest request);
+            @Valid @RequestBody PostUpdateRequest request);
 
     @Operation(summary = "게시글 삭제", description = "ID를 이용해 게시글을 삭제합니다.")
     @ApiResponses(value = {

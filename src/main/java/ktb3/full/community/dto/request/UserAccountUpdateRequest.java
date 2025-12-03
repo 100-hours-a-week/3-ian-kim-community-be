@@ -6,7 +6,6 @@ import ktb3.full.community.presentation.validator.NullableNotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Schema(title = "회원 정보 수정 요청 DTO")
 @Getter
@@ -18,6 +17,6 @@ public class UserAccountUpdateRequest {
     @NullableNotBlank(message = Constants.MESSAGE_NULLABLE_NOT_BLANK_NICKNAME)
     private final String nickname;
 
-    @Schema(description = "프로필 이미지", example = "https://test.kr/test.jpg")
-    private final MultipartFile profileImage;
+    @Schema(description = "프로필 이미지 파일명", example = "https://test.kr/test.jpg")
+    private final String profileImageName;
 }

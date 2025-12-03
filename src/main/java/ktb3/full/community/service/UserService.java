@@ -19,16 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ImageUploadService imageUploadService;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public long register(UserRegisterRequest request) {
         validateEmailDuplication(request.getEmail());
         validateNicknameDuplication(request.getNickname());
-        String profileImageName = imageUploadService.saveImageAndGetName(request.getProfileImage());
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        return userRepository.save(request.toUserEntity(encodedPassword, profileImageName)).getId();
+        return userRepository.save(request.toUserEntity(encodedPassword)).getId();
     }
 
     public UserAccountResponse getUserAccount(long userId) {
@@ -46,9 +44,8 @@ public class UserService {
             user.updateNickname(request.getNickname());
         }
 
-        if (request.getProfileImage() != null) {
-            String profileImageName = imageUploadService.saveImageAndGetName(request.getProfileImage());
-            user.updateProfileImageName(profileImageName);
+        if (request.getProfileImageName() != null) {
+            user.updateProfileImageName(request.getProfileImageName());
         }
 
         return UserAccountUpdateResponse.from(user);

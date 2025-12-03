@@ -17,7 +17,6 @@ import ktb3.full.community.security.userdetails.AuthUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "AuthenticatedUser", description = "인증된 회원 API")
@@ -41,7 +40,7 @@ public interface AuthenticatedUserApi {
     })
     ResponseEntity<ApiResponse<UserAccountUpdateResponse>> updateUserAccount(
             @AuthenticationPrincipal AuthUserDetails userDetails,
-            @Valid @ModelAttribute UserAccountUpdateRequest userAccountUpdateRequest);
+            @Valid @RequestBody UserAccountUpdateRequest userAccountUpdateRequest);
 
     @Operation(summary = "회원 비밀번호 수정", description = "회원의 비밀번호를 수정합니다.")
     @ApiResponses(value = {

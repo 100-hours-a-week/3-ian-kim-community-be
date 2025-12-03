@@ -2,16 +2,16 @@ package ktb3.full.community.presentation.controller;
 
 import ktb3.full.community.ControllerTestSupport;
 import ktb3.full.community.config.WithAuthMockUser;
+import ktb3.full.community.dto.request.PostCreateRequest;
 import ktb3.full.community.dto.response.PostDetailResponse;
 import ktb3.full.community.dto.response.PostResponse;
-import ktb3.full.community.fixture.MultipartFileFixture;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
@@ -82,12 +82,17 @@ class PostApiControllerTest extends ControllerTestSupport {
         @Test
         void 새_게시글을_작성한다() throws Exception {
             // given
+            PostCreateRequest request = PostCreateRequest.builder()
+                    .title("title")
+                    .content("content")
+                    .originImageName("originImageName")
+                    .imageName("imageName")
+                    .build();
 
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/posts")
-                    .file(MultipartFileFixture.createImage())
-                    .param("title", "post title")
-                    .param("content", "post content"));
+            ResultActions resultActions = mockMvc.perform(post("/posts")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions
@@ -102,12 +107,17 @@ class PostApiControllerTest extends ControllerTestSupport {
         @Test
         void 새_게시글_작성_시_제목에_공백이_아닌_문자가_1개_이상_있어야_한다() throws Exception {
             // given
+            PostCreateRequest request = PostCreateRequest.builder()
+                    .title(" ")
+                    .content("content")
+                    .originImageName("originImageName")
+                    .imageName("imageName")
+                    .build();
 
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/posts")
-                    .file(MultipartFileFixture.createImage())
-                    .param("title", " ")
-                    .param("content", "post content"));
+            ResultActions resultActions = mockMvc.perform(post("/posts")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions
@@ -121,12 +131,17 @@ class PostApiControllerTest extends ControllerTestSupport {
         @Test
         void 새_게시글_작성_시_내용에_공백이_아닌_문자가_1개_이상_있어야_한다() throws Exception {
             // given
+            PostCreateRequest request = PostCreateRequest.builder()
+                    .title("title")
+                    .content(" ")
+                    .originImageName("originImageName")
+                    .imageName("imageName")
+                    .build();
 
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/posts")
-                    .file(MultipartFileFixture.createImage())
-                    .param("title", "post title")
-                    .param("content", " "));
+            ResultActions resultActions = mockMvc.perform(post("/posts")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions
@@ -146,9 +161,14 @@ class PostApiControllerTest extends ControllerTestSupport {
             // given
             long postId = 1L;
 
+            PostCreateRequest request = PostCreateRequest.builder()
+                    .title("title")
+                    .build();
+
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/posts/{postId}", postId)
-                    .param("title", "updated title"));
+            ResultActions resultActions = mockMvc.perform(patch("/posts/{postId}", postId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions
@@ -164,9 +184,14 @@ class PostApiControllerTest extends ControllerTestSupport {
             // given
             long postId = 1L;
 
+            PostCreateRequest request = PostCreateRequest.builder()
+                    .content("content")
+                    .build();
+
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/posts/{postId}", postId)
-                    .param("content", "updated content"));
+            ResultActions resultActions = mockMvc.perform(patch("/posts/{postId}", postId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions
@@ -182,9 +207,15 @@ class PostApiControllerTest extends ControllerTestSupport {
             // given
             long postId = 1L;
 
+            PostCreateRequest request = PostCreateRequest.builder()
+                    .originImageName("originImageName")
+                    .imageName("imageName")
+                    .build();
+
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/posts/{postId}", postId)
-                    .file(MultipartFileFixture.createImage()));
+            ResultActions resultActions = mockMvc.perform(patch("/posts/{postId}", postId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions
@@ -200,9 +231,14 @@ class PostApiControllerTest extends ControllerTestSupport {
             // given
             long postId = 1L;
 
+            PostCreateRequest request = PostCreateRequest.builder()
+                    .title(" ")
+                    .build();
+
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/posts/{postId}", postId)
-                    .param("title", " "));
+            ResultActions resultActions = mockMvc.perform(patch("/posts/{postId}", postId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions
@@ -218,9 +254,14 @@ class PostApiControllerTest extends ControllerTestSupport {
             // given
             long postId = 1L;
 
+            PostCreateRequest request = PostCreateRequest.builder()
+                    .content(" ")
+                    .build();
+
             // when
-            ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/posts/{postId}", postId)
-                    .param("content", " "));
+            ResultActions resultActions = mockMvc.perform(patch("/posts/{postId}", postId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
 
             // then
             resultActions

@@ -7,14 +7,12 @@ import ktb3.full.community.domain.entity.User;
 import ktb3.full.community.dto.request.PostCreateRequest;
 import ktb3.full.community.dto.request.PostUpdateRequest;
 import ktb3.full.community.dto.response.PostDetailResponse;
-import ktb3.full.community.fixture.MultipartFileFixture;
 import ktb3.full.community.fixture.PostFixture;
 import ktb3.full.community.fixture.UserFixture;
 import ktb3.full.community.repository.PostRepository;
 import ktb3.full.community.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,12 +34,12 @@ public class PostServiceTest extends IntegrationTestSupport {
         void 이미지가_있는_게시글을_생성한다() {
             // given
             User user = userRepository.save(UserFixture.createUser());
-            MockMultipartFile image = MultipartFileFixture.createWithOriginName("image.png");
 
             PostCreateRequest request = PostCreateRequest.builder()
                     .title("title")
                     .content("content")
-                    .image(image)
+                    .originImageName("originImageName")
+                    .imageName("imageName")
                     .build();
 
             // when
@@ -51,8 +49,8 @@ public class PostServiceTest extends IntegrationTestSupport {
             Post foundPost = postRepository.findById(postId).orElseThrow();
             assertThat(foundPost.getTitle()).isEqualTo("title");
             assertThat(foundPost.getContent()).isEqualTo("content");
-            assertThat(foundPost.getImageName()).isEqualTo("/images/image.png");
-            assertThat(foundPost.getOriginImageName()).isEqualTo("image.png");
+            assertThat(foundPost.getImageName()).isEqualTo("imageName");
+            assertThat(foundPost.getOriginImageName()).isEqualTo("originImageName");
         }
 
         @Test
@@ -63,7 +61,8 @@ public class PostServiceTest extends IntegrationTestSupport {
             PostCreateRequest request = PostCreateRequest.builder()
                     .title("title")
                     .content("content")
-                    .image(null)
+                    .originImageName(null)
+                    .imageName(null)
                     .build();
 
             // when
@@ -87,12 +86,12 @@ public class PostServiceTest extends IntegrationTestSupport {
             // given
             User user = userRepository.save(UserFixture.createUser());
             Post post = postRepository.save(PostFixture.createPost(user));
-            MockMultipartFile updatedImage = MultipartFileFixture.createWithOriginName("updatedImage.png");
 
             PostUpdateRequest request = PostUpdateRequest.builder()
                     .title("updated title")
                     .content("updated content")
-                    .image(updatedImage)
+                    .originImageName("updatedOriginImageName")
+                    .imageName("updatedImageName")
                     .build();
 
             // when
@@ -102,8 +101,8 @@ public class PostServiceTest extends IntegrationTestSupport {
             Post foundPost = postRepository.findById(post.getId()).orElseThrow();
             assertThat(foundPost.getTitle()).isEqualTo("updated title");
             assertThat(foundPost.getContent()).isEqualTo("updated content");
-            assertThat(foundPost.getImageName()).isEqualTo("/images/updatedImage.png");
-            assertThat(foundPost.getOriginImageName()).isEqualTo("updatedImage.png");
+            assertThat(foundPost.getImageName()).isEqualTo("updatedImageName");
+            assertThat(foundPost.getOriginImageName()).isEqualTo("updatedOriginImageName");
         }
 
         @WithAuthMockUser
@@ -111,12 +110,13 @@ public class PostServiceTest extends IntegrationTestSupport {
         void 게시글의_제목만_입력하면_제목만_수정된다() {
             // given
             User user = userRepository.save(UserFixture.createUser());
-            Post post = postRepository.save(PostFixture.createForUpdate(user, "title", "content", "originImage.png", "/images/originImage.png"));
+            Post post = postRepository.save(PostFixture.createForUpdate(user, "title", "content", "originImageName", "imageName"));
 
             PostUpdateRequest request = PostUpdateRequest.builder()
                     .title("updated title")
                     .content(null)
-                    .image(null)
+                    .originImageName(null)
+                    .imageName(null)
                     .build();
 
             // when
@@ -126,8 +126,8 @@ public class PostServiceTest extends IntegrationTestSupport {
             Post foundPost = postRepository.findById(post.getId()).orElseThrow();
             assertThat(foundPost.getTitle()).isEqualTo("updated title");
             assertThat(foundPost.getContent()).isEqualTo("content");
-            assertThat(foundPost.getImageName()).isEqualTo("/images/originImage.png");
-            assertThat(foundPost.getOriginImageName()).isEqualTo("originImage.png");
+            assertThat(foundPost.getImageName()).isEqualTo("imageName");
+            assertThat(foundPost.getOriginImageName()).isEqualTo("originImageName");
         }
 
         @WithAuthMockUser
@@ -135,12 +135,13 @@ public class PostServiceTest extends IntegrationTestSupport {
         void 게시글의_내용만_입력하면_내용만_수정된다() {
             // given
             User user = userRepository.save(UserFixture.createUser());
-            Post post = postRepository.save(PostFixture.createForUpdate(user, "title", "content", "originImage.png", "/images/originImage.png"));
+            Post post = postRepository.save(PostFixture.createForUpdate(user, "title", "content", "originImageName", "imageName"));
 
             PostUpdateRequest request = PostUpdateRequest.builder()
                     .title(null)
                     .content("updated content")
-                    .image(null)
+                    .originImageName(null)
+                    .imageName(null)
                     .build();
 
             // when
@@ -150,8 +151,8 @@ public class PostServiceTest extends IntegrationTestSupport {
             Post foundPost = postRepository.findById(post.getId()).orElseThrow();
             assertThat(foundPost.getTitle()).isEqualTo("title");
             assertThat(foundPost.getContent()).isEqualTo("updated content");
-            assertThat(foundPost.getImageName()).isEqualTo("/images/originImage.png");
-            assertThat(foundPost.getOriginImageName()).isEqualTo("originImage.png");
+            assertThat(foundPost.getImageName()).isEqualTo("imageName");
+            assertThat(foundPost.getOriginImageName()).isEqualTo("originImageName");
         }
 
         @WithAuthMockUser
@@ -159,13 +160,13 @@ public class PostServiceTest extends IntegrationTestSupport {
         void 게시글의_이미지만_입력하면_이미지만_수정된다() {
             // given
             User user = userRepository.save(UserFixture.createUser());
-            Post post = postRepository.save(PostFixture.createForUpdate(user, "title", "content", "originImage.png", "/images/originImage.png"));
-            MockMultipartFile updatedImage = MultipartFileFixture.createWithOriginName("updatedImage.png");
+            Post post = postRepository.save(PostFixture.createForUpdate(user, "title", "content", "originImageName", "imageName"));
 
             PostUpdateRequest request = PostUpdateRequest.builder()
                     .title(null)
                     .content(null)
-                    .image(updatedImage)
+                    .originImageName("updatedOriginImageName")
+                    .imageName("updatedImageName")
                     .build();
 
             // when
@@ -175,8 +176,8 @@ public class PostServiceTest extends IntegrationTestSupport {
             Post foundPost = postRepository.findById(post.getId()).orElseThrow();
             assertThat(foundPost.getTitle()).isEqualTo("title");
             assertThat(foundPost.getContent()).isEqualTo("content");
-            assertThat(foundPost.getImageName()).isEqualTo("/images/updatedImage.png");
-            assertThat(foundPost.getOriginImageName()).isEqualTo("updatedImage.png");
+            assertThat(foundPost.getImageName()).isEqualTo("updatedImageName");
+            assertThat(foundPost.getOriginImageName()).isEqualTo("updatedOriginImageName");
         }
     }
 

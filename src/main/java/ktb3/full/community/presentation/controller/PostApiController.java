@@ -49,7 +49,7 @@ public class PostApiController implements PostApi {
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createPost(
             @AuthenticationPrincipal AuthUserDetails userDetails,
-            @Valid @ModelAttribute PostCreateRequest request
+            @Valid @RequestBody PostCreateRequest request
     ) {
         long postId = postService.createPost(userDetails.getUserId(), request);
         return ResponseEntity.created(URI.create(String.format("/posts/%d", postId)))
@@ -59,7 +59,7 @@ public class PostApiController implements PostApi {
     @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
             @Positive @PathVariable("postId") long postId,
-            @Valid @ModelAttribute PostUpdateRequest request) {
+            @Valid @RequestBody PostUpdateRequest request) {
         postService.updatePost(postId, request);
         return ResponseEntity.ok()
                 .body(ApiResponse.success());

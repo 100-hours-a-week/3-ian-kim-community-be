@@ -10,13 +10,11 @@ import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.UserAccountUpdateResponse;
-import ktb3.full.community.fixture.MultipartFileFixture;
 import ktb3.full.community.fixture.UserFixture;
 import ktb3.full.community.repository.UserRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,13 +37,11 @@ public class UserServiceTest extends IntegrationTestSupport {
         @Test
         void 회원을_생성한다() {
             // given
-            MockMultipartFile profileImage = MultipartFileFixture.createProfileImageWithOriginName("profileImage.png");
-
             UserRegisterRequest request = UserRegisterRequest.builder()
                     .email("email@example.com")
                     .password("Password123!")
                     .nickname("name")
-                    .profileImage(profileImage)
+                    .profileImageName("profileImageName")
                     .build();
 
             // when
@@ -56,7 +52,7 @@ public class UserServiceTest extends IntegrationTestSupport {
             assertThat(foundUser.getEmail()).isEqualTo("email@example.com");
             assertThat(passwordEncoder.matches("Password123!", foundUser.getPassword())).isTrue();
             assertThat(foundUser.getNickname()).isEqualTo("name");
-            assertThat(foundUser.getProfileImageName()).isEqualTo("/images/profileImage.png");
+            assertThat(foundUser.getProfileImageName()).isEqualTo("profileImageName");
         }
 
         @Test
@@ -117,18 +113,17 @@ public class UserServiceTest extends IntegrationTestSupport {
         @Test
         void 회원의_프로필이미지만_수정한다() {
             // given
-            User me = userRepository.save(UserFixture.createUser("me@example.com", "me", "/images/me.png"));
-            MockMultipartFile newProfileImage = MultipartFileFixture.createProfileImageWithOriginName("newProfileImage.png");
+            User me = userRepository.save(UserFixture.createUser("me@example.com", "me", "profileImageName"));
 
             UserAccountUpdateRequest request = UserAccountUpdateRequest.builder()
-                    .profileImage(newProfileImage)
+                    .profileImageName("newProfileImageName")
                     .build();
 
             // when
             UserAccountUpdateResponse response = sut.updateAccount(me.getId(), request);
 
             // then
-            assertThat(response.getProfileImageName()).isEqualTo("/images/newProfileImage.png");
+            assertThat(response.getProfileImageName()).isEqualTo("newProfileImageName");
 
             User foundUser = userRepository.findById(me.getId()).orElseThrow();
             assertThat(foundUser.getNickname()).isEqualTo("me");

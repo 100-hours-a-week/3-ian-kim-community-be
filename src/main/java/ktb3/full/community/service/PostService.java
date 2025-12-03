@@ -18,7 +18,6 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -28,7 +27,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostLikeRepository postLikeRepository;
-    private final ImageUploadService imageUploadService;
 
     public PagedModel<PostResponse> getAllPosts(Pageable pageable) {
         Page<Post> postPages = postRepository.findAllActive(pageable);
@@ -45,11 +43,8 @@ public class PostService {
 
     @Transactional
     public long createPost(long userId, PostCreateRequest request) {
-        MultipartFile image = request.getImage();
-        String imageName = imageUploadService.saveImageAndGetName(request.getImage());
-        String originImageName = image != null ? image.getOriginalFilename() : null;
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        Post post = request.toEntity(user, originImageName, imageName);
+        Post post = request.toEntity(user);
         postRepository.save(post);
         return PostDetailResponse.from(post, false).getPostId();
     }
@@ -67,9 +62,8 @@ public class PostService {
             post.updateContent(request.getContent());
         }
 
-        if (request.getImage() != null) {
-            String imageName = imageUploadService.saveImageAndGetName(request.getImage());
-            post.updateImage(request.getImage().getOriginalFilename(), imageName);
+        if (request.getOriginImageName() != null && request.getImageName() != null) {
+            post.updateImage(request.getOriginImageName(), request.getImageName());
         }
     }
 }

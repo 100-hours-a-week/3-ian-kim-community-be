@@ -37,7 +37,7 @@ public class AuthenticatedUserApiController implements AuthenticatedUserApi {
     @PatchMapping
     public ResponseEntity<ApiResponse<UserAccountUpdateResponse>> updateUserAccount(
             @AuthenticationPrincipal AuthUserDetails userDetails,
-            @Valid @ModelAttribute UserAccountUpdateRequest userAccountUpdateRequest) {
+            @Valid @RequestBody UserAccountUpdateRequest userAccountUpdateRequest) {
         UserAccountUpdateResponse response = userService.updateAccount(userDetails.getUserId(), userAccountUpdateRequest);
         return ResponseEntity.ok()
                 .body(ApiResponse.success(response));

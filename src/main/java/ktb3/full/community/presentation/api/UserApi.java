@@ -11,7 +11,7 @@ import ktb3.full.community.dto.response.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "User", description = "회원 API")
 public interface UserApi {
@@ -24,7 +24,7 @@ public interface UserApi {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이메일, 닉네임 중복",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
-    ResponseEntity<ApiResponse<Void>> signUp(@Valid @ModelAttribute UserRegisterRequest userRegisterRequest);
+    ResponseEntity<ApiResponse<Void>> signUp(@Valid @RequestBody UserRegisterRequest userRegisterRequest);
 
     @Operation(summary = "로그인 여부 조회", description = "회원의 로그인 여부를 조회합니다.")
     @ApiResponses(value = {
