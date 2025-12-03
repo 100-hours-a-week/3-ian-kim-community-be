@@ -41,28 +41,28 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadableException(HttpServletRequest request, HttpMessageNotReadableException e) {
         logError(request, e);
         return ResponseEntity.badRequest()
-                .body(ApiResponse.error(ApiErrorCode.HTTP_MESSAGE_NOT_READABLE, e.getMessage()));
+                .body(ApiResponse.error(ApiErrorCode.HTTP_MESSAGE_NOT_READABLE));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ApiResponse<Void>> handleMissingServletRequestParameterException(HttpServletRequest request, MissingServletRequestParameterException e) {
         logError(request, e);
         return ResponseEntity.badRequest()
-                .body(ApiResponse.error(ApiErrorCode.MISSING_SERVLET_REQUEST_PARAMETER, e.getMessage()));
+                .body(ApiResponse.error(ApiErrorCode.MISSING_SERVLET_REQUEST_PARAMETER));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse<Void>> handleMethodArgumentTypeMismatchException(HttpServletRequest request, MethodArgumentTypeMismatchException e) {
         logError(request, e);
         return ResponseEntity.badRequest()
-                .body(ApiResponse.error(ApiErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH, e.getMessage()));
+                .body(ApiResponse.error(ApiErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiResponse<Void>> handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException e) {
         logError(request, e);
         return ResponseEntity.badRequest()
-                .body(ApiResponse.error(ApiErrorCode.CONSTRAINT_VIOLATION, e.getMessage()));
+                .body(ApiResponse.error(ApiErrorCode.CONSTRAINT_VIOLATION));
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
@@ -76,21 +76,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleHttpRequestMethodNotSupportedException(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
         logError(request, e);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-                .body(ApiResponse.error(ApiErrorCode.METHOD_NOT_ALLOWED, e.getMessage()));
+                .body(ApiResponse.error(ApiErrorCode.METHOD_NOT_ALLOWED));
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ApiResponse<Void>> handleHttpMediaTypeNotSupportedException(HttpServletRequest request, HttpMediaTypeNotSupportedException e) {
         logError(request, e);
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                .body(ApiResponse.error(ApiErrorCode.UNSUPPORTED_MEDIA_TYPE, e.getMessage()));
+                .body(ApiResponse.error(ApiErrorCode.UNSUPPORTED_MEDIA_TYPE));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(HttpServletRequest request, AccessDeniedException e) {
         logError(request, e);
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error(ApiErrorCode.NO_PERMISSION, e.getMessage()));
+                .body(ApiResponse.error(ApiErrorCode.NO_PERMISSION));
     }
 
     @ExceptionHandler(Exception.class)
