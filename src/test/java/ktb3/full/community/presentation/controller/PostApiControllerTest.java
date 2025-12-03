@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -87,8 +86,7 @@ class PostApiControllerTest extends ControllerTestSupport {
             ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/posts")
                     .file(MultipartFileFixture.createImage())
                     .param("title", "post title")
-                    .param("content", "post content")
-                    .with(csrf()));
+                    .param("content", "post content"));
 
             // then
             resultActions
@@ -108,8 +106,7 @@ class PostApiControllerTest extends ControllerTestSupport {
             ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/posts")
                     .file(MultipartFileFixture.createImage())
                     .param("title", " ")
-                    .param("content", "post content")
-                    .with(csrf()));
+                    .param("content", "post content"));
 
             // then
             resultActions
@@ -128,8 +125,7 @@ class PostApiControllerTest extends ControllerTestSupport {
             ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/posts")
                     .file(MultipartFileFixture.createImage())
                     .param("title", "post title")
-                    .param("content", " ")
-                    .with(csrf()));
+                    .param("content", " "));
 
             // then
             resultActions
@@ -151,8 +147,7 @@ class PostApiControllerTest extends ControllerTestSupport {
 
             // when
             ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/posts/{postId}", postId)
-                    .param("title", "updated title")
-                    .with(csrf()));
+                    .param("title", "updated title"));
 
             // then
             resultActions
@@ -170,8 +165,7 @@ class PostApiControllerTest extends ControllerTestSupport {
 
             // when
             ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/posts/{postId}", postId)
-                    .param("content", "updated content")
-                    .with(csrf()));
+                    .param("content", "updated content"));
 
             // then
             resultActions
@@ -189,8 +183,7 @@ class PostApiControllerTest extends ControllerTestSupport {
 
             // when
             ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/posts/{postId}", postId)
-                    .file(MultipartFileFixture.createImage())
-                    .with(csrf()));
+                    .file(MultipartFileFixture.createImage()));
 
             // then
             resultActions
@@ -208,8 +201,7 @@ class PostApiControllerTest extends ControllerTestSupport {
 
             // when
             ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/posts/{postId}", postId)
-                    .param("title", " ")
-                    .with(csrf()));
+                    .param("title", " "));
 
             // then
             resultActions
@@ -227,8 +219,7 @@ class PostApiControllerTest extends ControllerTestSupport {
 
             // when
             ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.PATCH, "/posts/{postId}", postId)
-                    .param("content", " ")
-                    .with(csrf()));
+                    .param("content", " "));
 
             // then
             resultActions
@@ -249,8 +240,7 @@ class PostApiControllerTest extends ControllerTestSupport {
             long postId = 1L;
 
             // when
-            ResultActions resultActions = mockMvc.perform(delete("/posts/{postId}", postId)
-                    .with(csrf()));
+            ResultActions resultActions = mockMvc.perform(delete("/posts/{postId}", postId));
 
             // then
             resultActions
@@ -271,8 +261,7 @@ class PostApiControllerTest extends ControllerTestSupport {
             long postId = 1L;
 
             // when
-            ResultActions resultActions = mockMvc.perform(post("/posts/{postId}/like", postId)
-                    .with(csrf()));
+            ResultActions resultActions = mockMvc.perform(post("/posts/{postId}/like", postId));
 
             // then
             resultActions
