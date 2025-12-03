@@ -46,7 +46,7 @@ public class PostLike {
         return PostLike.builder()
                 .user(user)
                 .post(post)
-                .isLiked(true)
+                .isLiked(false)
                 .build();
     }
 

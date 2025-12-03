@@ -14,7 +14,7 @@ class PostLikeTest {
     class create {
 
         @Test
-        void 좋아요_생성_시_좋아요_상태는_true다() {
+        void 좋아요_생성_시_좋아요_상태는_false다() {
             // given
             User user = UserFixture.createUser();
             Post post = PostFixture.createPost(user);
@@ -23,7 +23,7 @@ class PostLikeTest {
             PostLike postLike = PostLike.create(user, post);
 
             // then
-            assertThat(postLike.isLiked()).isTrue();
+            assertThat(postLike.isLiked()).isFalse();
         }
     }
 
