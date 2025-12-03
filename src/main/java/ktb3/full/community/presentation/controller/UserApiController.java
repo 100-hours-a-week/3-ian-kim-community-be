@@ -2,8 +2,6 @@ package ktb3.full.community.presentation.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import ktb3.full.community.common.annotation.constraint.EmailPattern;
-import ktb3.full.community.common.annotation.constraint.NicknamePattern;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.*;
 import ktb3.full.community.presentation.api.UserApi;
@@ -26,14 +24,14 @@ public class UserApiController implements UserApi {
     private final UserService userService;
 
     @GetMapping("/email-validation")
-    public ResponseEntity<ApiResponse<UserValidationResponse>> validateEmailAvailable(@EmailPattern @RequestParam("email") String email) {
+    public ResponseEntity<ApiResponse<UserValidationResponse>> validateEmailAvailable(@RequestParam("email") String email) {
         UserValidationResponse userValidationResponse = userService.validateEmailAvailable(email);
         return ResponseEntity.ok()
                 .body(ApiResponse.success(userValidationResponse));
     }
 
     @GetMapping("/nickname-validation")
-    public ResponseEntity<ApiResponse<UserValidationResponse>> validateNicknameAvailable(@NicknamePattern @RequestParam("nickname") String nickname) {
+    public ResponseEntity<ApiResponse<UserValidationResponse>> validateNicknameAvailable(@RequestParam("nickname") String nickname) {
         UserValidationResponse userValidationResponse = userService.validateNicknameAvailable(nickname);
         return ResponseEntity.ok()
                 .body(ApiResponse.success(userValidationResponse));

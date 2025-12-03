@@ -1,7 +1,8 @@
 package ktb3.full.community.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ktb3.full.community.common.annotation.constraint.CommentContentPattern;
+import ktb3.full.community.common.Constants;
+import ktb3.full.community.presentation.validator.NullableNotBlank;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -11,6 +12,6 @@ import lombok.RequiredArgsConstructor;
 public class CommentUpdateRequest {
 
     @Schema(description = "내용", example = "테스트 댓글입니다.")
-    @CommentContentPattern
+    @NullableNotBlank(message = Constants.MESSAGE_NULLABLE_NOT_BLANK_COMMENT_CONTENT)
     private final String content;
 }

@@ -4,13 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-//import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import ktb3.full.community.common.annotation.constraint.EmailPattern;
-import ktb3.full.community.common.annotation.constraint.NicknamePattern;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.*;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +27,7 @@ public interface UserApi {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
     ResponseEntity<ApiResponse<UserValidationResponse>> validateEmailAvailable(
-            @EmailPattern @RequestParam("email") @Parameter(description = "이메일") String email);
+            @RequestParam("email") @Parameter(description = "이메일") String email);
 
 
     @Operation(summary = "닉네임 중복 검사", description = "닉네임이 중복되는지 검사합니다.")
@@ -40,7 +37,7 @@ public interface UserApi {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
     ResponseEntity<ApiResponse<UserValidationResponse>> validateNicknameAvailable(
-            @NicknamePattern @RequestParam("nickname") @Parameter(description = "닉네임") String nickname);
+            @RequestParam("nickname") @Parameter(description = "닉네임") String nickname);
 
     @Operation(summary = "회원가입", description = "새로운 회원을 등록합니다.")
     @ApiResponses(value = {

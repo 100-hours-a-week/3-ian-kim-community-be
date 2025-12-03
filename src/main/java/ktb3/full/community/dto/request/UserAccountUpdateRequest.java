@@ -1,7 +1,8 @@
 package ktb3.full.community.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ktb3.full.community.common.annotation.constraint.NicknamePattern;
+import ktb3.full.community.common.Constants;
+import ktb3.full.community.presentation.validator.NullableNotBlank;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserAccountUpdateRequest {
 
     @Schema(description = "닉네임", example = "testNick")
-    @NicknamePattern
+    @NullableNotBlank(message = Constants.MESSAGE_NULLABLE_NOT_BLANK_NICKNAME)
     private final String nickname;
 
     @Schema(description = "프로필 이미지", example = "https://test.kr/test.jpg")
