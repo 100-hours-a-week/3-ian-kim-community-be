@@ -34,11 +34,6 @@ public class CommentService {
         return new PagedModel<>(commentsPageResponse.map(CommentResponse::from));
     }
 
-    public CommentResponse getComment(long commentId) {
-        Comment comment = commentRepository.findByIdActive(commentId).orElseThrow(CommentNotFoundException::new);
-        return CommentResponse.from(comment);
-    }
-
     @Transactional
     public CommentResponse createComment(long userId, long postId, CommentCreateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);

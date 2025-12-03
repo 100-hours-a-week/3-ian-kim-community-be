@@ -1,7 +1,6 @@
 package ktb3.full.community.presentation.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.*;
 import ktb3.full.community.presentation.api.UserApi;
@@ -42,13 +41,6 @@ public class UserApiController implements UserApi {
         long userId = userService.register(userRegisterRequest);
         return ResponseEntity.created(URI.create(String.format("/users/%d", userId)))
                 .body(ApiResponse.success());
-    }
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse<UserProfileResponse>> getUserProfile(@Positive @PathVariable("userId") long userId) {
-        UserProfileResponse userProfile = userService.getUserProfile(userId);
-        return ResponseEntity.ok()
-                .body(ApiResponse.success(userProfile));
     }
 
     @GetMapping("/check")

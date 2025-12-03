@@ -34,15 +34,6 @@ public interface CommentApi {
             @Valid Pageable pageable,
             @Positive @PathVariable("postId") @Parameter(description = "게시글 ID") long postId);
 
-    @Operation(summary = "댓글 상세 조회", description = "ID를 이용해 특정 댓글을 조회합니다.")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 필요",
-                    content = @Content(schema = @Schema(implementation = ApiResponse.class))),
-    })
-    ResponseEntity<ApiResponse<CommentResponse>> getComment(
-            @Positive @PathVariable("commentId") @Parameter(description = "댓글 ID") long commentId);
-
     @Operation(summary = "댓글 생성", description = "새로운 댓글을 생성합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "생성 성공"),

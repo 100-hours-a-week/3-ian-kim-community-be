@@ -35,13 +35,6 @@ public class CommentApiController implements CommentApi {
                 .body(ApiResponse.success(response));
     }
 
-    @GetMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponse>> getComment(@Positive @PathVariable("commentId") long commentId) {
-        CommentResponse response = commentService.getComment(commentId);
-        return ResponseEntity.ok()
-                .body(ApiResponse.success(response));
-    }
-
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<ApiResponse<CommentResponse>> createComment(
             @AuthenticationPrincipal AuthUserDetails userDetails,

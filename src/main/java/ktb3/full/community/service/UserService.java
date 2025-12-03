@@ -6,7 +6,6 @@ import ktb3.full.community.dto.request.UserAccountUpdateRequest;
 import ktb3.full.community.dto.request.UserPasswordUpdateRequest;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.UserAccountUpdateResponse;
-import ktb3.full.community.dto.response.UserProfileResponse;
 import ktb3.full.community.dto.response.UserValidationResponse;
 import ktb3.full.community.dto.response.UserAccountResponse;
 import ktb3.full.community.repository.UserRepository;
@@ -44,11 +43,6 @@ public class UserService {
     public UserAccountResponse getUserAccount(long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         return UserAccountResponse.from(user);
-    }
-
-    public UserProfileResponse getUserProfile(long userId) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        return UserProfileResponse.from(user);
     }
 
     @Transactional
