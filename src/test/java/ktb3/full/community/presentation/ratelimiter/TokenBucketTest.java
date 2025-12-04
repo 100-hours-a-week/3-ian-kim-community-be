@@ -11,6 +11,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TokenBucketTest {
 
     @Nested
+    class create {
+
+        @Test
+        void 버킷_생성_시_용량만큼_토큰이_생성된다() {
+            // given
+            StubTime time = new StubTime(LocalDateTime.of(2025, 12, 4, 20, 0, 0));
+            long capacity = 1000;
+
+            // when
+            TokenBucket tokenBucket = TokenBucket.create(capacity, 0, 1, time);
+
+            // then
+            assertThat(tokenBucket.getTokens()).isEqualTo(capacity);
+        }
+    }
+
+    @Nested
     class tryConsume {
 
         @Test

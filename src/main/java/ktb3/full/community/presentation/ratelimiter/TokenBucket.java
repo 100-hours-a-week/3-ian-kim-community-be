@@ -33,6 +33,10 @@ public class TokenBucket {
         this.time = time;
     }
 
+    public long getTokens() {
+        return tokens.get();
+    }
+
     public synchronized boolean tryConsume() {
         refill();
 
