@@ -8,8 +8,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import ktb3.full.community.dto.request.UserRegisterRequest;
 import ktb3.full.community.dto.response.*;
+import ktb3.full.community.security.userdetails.AuthUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,5 +33,5 @@ public interface UserApi {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping("/check")
-    ResponseEntity<ApiResponse<UserLoginCheckResponse>> checkLogin(Authentication authentication);
+    ResponseEntity<ApiResponse<UserLoginCheckResponse>> checkLogin(@AuthenticationPrincipal AuthUserDetails principal);
 }

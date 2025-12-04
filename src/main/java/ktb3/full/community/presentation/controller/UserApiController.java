@@ -8,7 +8,7 @@ import ktb3.full.community.security.userdetails.AuthUserDetails;
 import ktb3.full.community.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,13 +30,13 @@ public class UserApiController implements UserApi {
     }
 
     @GetMapping("/check")
-    public ResponseEntity<ApiResponse<UserLoginCheckResponse>> checkLogin(Authentication authentication) {
+    public ResponseEntity<ApiResponse<UserLoginCheckResponse>> checkLogin(@AuthenticationPrincipal AuthUserDetails principal) {
         Long userId = null;
-        if (authentication != null && authentication.isAuthenticated()) {
-            AuthUserDetails principal = (AuthUserDetails) authentication.getPrincipal();
-            userId = principal.getUserId();
 
+        if (principal != null) {
+            userId = principal.getUserId();
         }
+
         return ResponseEntity.ok()
                 .body(ApiResponse.success(new UserLoginCheckResponse(userId)));
     }
