@@ -39,6 +39,9 @@ public enum ApiErrorCode {
     // 415 Unsupported Media Type
     UNSUPPORTED_MEDIA_TYPE("4151", "지원하지 않는 미디어 타입입니다."),
 
+    // 429 Too Many Requests
+    TOO_MANY_REQUESTS("4291", "요청 한도를 초과했습니다."),
+
     // 500 Internal Server Error
     INTERNAL_SERVER_ERROR("5001", "현재 서버에서 요청을 처리할 수 없습니다. 잠시 후 다시 시도해주세요."),
     IMAGE_UPLOAD_FAILED("5002", "이미지 업로드에 실패했습니다."),
