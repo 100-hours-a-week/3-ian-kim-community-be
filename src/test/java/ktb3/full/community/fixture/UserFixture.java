@@ -35,6 +35,10 @@ public class UserFixture {
         return createUser(null, password, null, null, false);
     }
 
+    public static User createDeleted() {
+        return createUser(null, null, null, null, true);
+    }
+
     public static User createDeletedWithEmail(String email) {
         return createUser(email, null, null, null, true);
     }
