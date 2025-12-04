@@ -28,7 +28,7 @@ class RateLimitFilterTest extends ControllerTestSupport {
     void 버킷의_토큰수를_초과하지_않으면_요청이_허용된다() throws Exception {
         // given
         StubTime time = new StubTime(LocalDateTime.of(2025, 12, 4, 20, 0, 0));
-        TokenBucket tokenBucket = new TokenBucket(1, 0, 1, time);
+        TokenBucket tokenBucket = TokenBucket.create(1, 0, 1, time);
 
         given(tokenBucketRegistry.resolveBucket(any(String.class))).willReturn(tokenBucket);
 
@@ -47,7 +47,7 @@ class RateLimitFilterTest extends ControllerTestSupport {
     void 버킷의_토큰수를_초과해_요청하면_요청이_거부된다() throws Exception {
         // given
         StubTime time = new StubTime(LocalDateTime.of(2025, 12, 4, 20, 0, 0));
-        TokenBucket tokenBucket = new TokenBucket(0, 0, 1, time);
+        TokenBucket tokenBucket = TokenBucket.create(0, 0, 1, time);
 
         given(tokenBucketRegistry.resolveBucket(any(String.class))).willReturn(tokenBucket);
 

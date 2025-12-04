@@ -12,6 +12,6 @@ public class TokenBucketRegistry {
     private final Map<String, TokenBucket> buckets = new ConcurrentHashMap<>();
 
     public TokenBucket resolveBucket(String key) {
-        return buckets.computeIfAbsent(key, k -> new TokenBucket(100, 1, 600, new BaseTime()));
+        return buckets.computeIfAbsent(key, k -> TokenBucket.create(100, 1, 600, new BaseTime()));
     }
 }

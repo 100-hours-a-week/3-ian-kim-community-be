@@ -18,7 +18,7 @@ class TokenBucketTest {
             // given
             StubTime time = new StubTime(LocalDateTime.of(2025, 12, 4, 20, 0, 0));
 
-            TokenBucket sut = new TokenBucket(1, 0, 1, time);
+            TokenBucket sut = TokenBucket.create(1, 0, 1, time);
 
             // when
             boolean isPermitted = sut.tryConsume();
@@ -32,7 +32,7 @@ class TokenBucketTest {
             // given
             StubTime time = new StubTime(LocalDateTime.of(2025, 12, 4, 20, 0, 0));
 
-            TokenBucket sut = new TokenBucket(0, 0, 1, time);
+            TokenBucket sut = TokenBucket.create(0, 0, 1, time);
 
             // when
             boolean isPermitted = sut.tryConsume();

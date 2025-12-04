@@ -1,8 +1,8 @@
 package ktb3.full.community.presentation.ratelimiter;
 
 import ktb3.full.community.common.time.Time;
+import lombok.Builder;
 
-import java.time.Instant;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class TokenBucket {
@@ -14,7 +14,17 @@ public class TokenBucket {
     private final AtomicLong lastRefillTimestamp; // 마지막 리필 시간
     private final Time time;
 
-    public TokenBucket(long capacity, long refillTokens, long refillInterval, Time time) {
+    public static TokenBucket create(long capacity, long refillTokens, long refillInterval, Time time) {
+        return TokenBucket.builder()
+                .capacity(capacity)
+                .refillTokens(refillTokens)
+                .refillInterval(refillInterval)
+                .time(time)
+                .build();
+    }
+
+    @Builder
+    private TokenBucket(long capacity, long refillTokens, long refillInterval, Time time) {
         this.capacity = capacity;
         this.refillTokens = refillTokens;
         this.refillInterval = refillInterval;
