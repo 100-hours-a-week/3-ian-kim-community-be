@@ -95,6 +95,7 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     runtimeOnly 'com.h2database:h2'
 
+    implementation 'com.bucket4j:bucket4j_jdk17-core:8.15.0'
     implementation 'com.github.ben-manes.caffeine:caffeine:3.2.3'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
