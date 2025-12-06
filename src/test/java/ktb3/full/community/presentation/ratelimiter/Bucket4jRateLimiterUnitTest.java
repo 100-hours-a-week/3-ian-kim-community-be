@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
+import io.github.bucket4j.ConsumptionProbe;
 import ktb3.full.community.UnitTestSupport;
 import ktb3.full.community.presentation.ratelimiter.bucket.Bucket4jRateLimiter;
 import ktb3.full.community.presentation.ratelimiter.bucket.BucketFactory;
@@ -75,10 +76,10 @@ class Bucket4jRateLimiterUnitTest extends UnitTestSupport {
 
             // when
             Bucket4jRateLimiter sut = new Bucket4jRateLimiter(cache, bucketFactory);
-            boolean result = sut.allowRequest("newKey", numTokensToConsume);
+            ConsumptionProbe result = sut.allowRequest("newKey", numTokensToConsume);
 
             // then
-            assertThat(result).isTrue();
+            assertThat(result.isConsumed()).isTrue();
         }
 
         @Test
@@ -94,10 +95,10 @@ class Bucket4jRateLimiterUnitTest extends UnitTestSupport {
 
             // when
             Bucket4jRateLimiter sut = new Bucket4jRateLimiter(cache, bucketFactory);
-            boolean result = sut.allowRequest("newKey", numTokensToConsume);
+            ConsumptionProbe result = sut.allowRequest("newKey", numTokensToConsume);
 
             // then
-            assertThat(result).isFalse();
+            assertThat(result.isConsumed()).isFalse();
         }
     }
     

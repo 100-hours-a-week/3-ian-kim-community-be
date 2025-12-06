@@ -1,5 +1,6 @@
 package ktb3.full.community.presentation.ratelimiter;
 
+import io.github.bucket4j.ConsumptionProbe;
 import ktb3.full.community.ControllerTestSupport;
 import ktb3.full.community.config.WithAuthMockUser;
 import ktb3.full.community.presentation.controller.PostApiController;
@@ -28,7 +29,8 @@ class RateLimitFilterTest extends ControllerTestSupport {
     @Test
     void 버킷의_토큰수를_초과하지_않으면_요청이_허용된다() throws Exception {
         // given
-        given(rateLimiter.allowRequest(anyLong(), anyLong())).willReturn(true);
+        ConsumptionProbe probe = ConsumptionProbe.consumed(1L, 1L);
+        given(rateLimiter.allowRequest(anyLong(), anyLong())).willReturn(probe);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/posts"));
@@ -45,7 +47,8 @@ class RateLimitFilterTest extends ControllerTestSupport {
     @Test
     void 버킷의_토큰수를_초과해_요청하면_요청이_거부된다() throws Exception {
         // given
-        given(rateLimiter.allowRequest(anyLong(), anyLong())).willReturn(false);
+        ConsumptionProbe probe = ConsumptionProbe.rejected(1L, 1L, 1L);
+        given(rateLimiter.allowRequest(anyLong(), anyLong())).willReturn(probe);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/posts"));

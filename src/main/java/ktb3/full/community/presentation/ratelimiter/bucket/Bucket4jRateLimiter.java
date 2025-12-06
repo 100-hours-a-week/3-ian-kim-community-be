@@ -2,6 +2,7 @@ package ktb3.full.community.presentation.ratelimiter.bucket;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import io.github.bucket4j.Bucket;
+import io.github.bucket4j.ConsumptionProbe;
 import ktb3.full.community.presentation.ratelimiter.RateLimiter;
 import lombok.Getter;
 import lombok.NonNull;
@@ -19,8 +20,8 @@ public class Bucket4jRateLimiter implements RateLimiter {
     private final BucketFactory bucketFactory;
 
     @Override
-    public boolean allowRequest(Object clientKey, long numTokensToConsume) {
+    public ConsumptionProbe allowRequest(Object clientKey, long numTokensToConsume) {
         Bucket bucket = Objects.requireNonNull(cache.get(clientKey, key -> bucketFactory.createBucket()));
-        return bucket.tryConsume(numTokensToConsume);
+        return bucket.tryConsumeAndReturnRemaining(numTokensToConsume);
     }
 }
