@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class RateLimiterConfig {
 
     @Bean
-    public Cache<@NonNull String, Bucket> rateLimitCache(RateLimiterProperties props) {
+    public Cache<@NonNull Object, Bucket> rateLimitCache(RateLimiterProperties props) {
         return Caffeine.newBuilder()
                 .maximumSize(props.getCache().getMaximumSize())
                 .expireAfterAccess(props.getCache().getExpireAfterAccess(), TimeUnit.MILLISECONDS)

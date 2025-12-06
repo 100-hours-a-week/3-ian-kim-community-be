@@ -15,11 +15,11 @@ import java.util.Objects;
 @Service
 public class Bucket4jRateLimiter implements RateLimiter {
 
-    private final Cache<@NonNull String, Bucket> cache;
+    private final Cache<@NonNull Object, Bucket> cache;
     private final BucketFactory bucketFactory;
 
     @Override
-    public boolean allowRequest(String clientKey, long numTokensToConsume) {
+    public boolean allowRequest(Object clientKey, long numTokensToConsume) {
         Bucket bucket = Objects.requireNonNull(cache.get(clientKey, key -> bucketFactory.createBucket()));
         return bucket.tryConsume(numTokensToConsume);
     }

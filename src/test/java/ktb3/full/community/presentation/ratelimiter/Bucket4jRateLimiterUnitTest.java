@@ -31,7 +31,7 @@ class Bucket4jRateLimiterUnitTest extends UnitTestSupport {
             long cacheMaximumSize = 1;
 
             Bucket bucket = createBucket(null, null, null);
-            Cache<String, Bucket> cache = createCache(cacheMaximumSize, null);
+            Cache<Object, Bucket> cache = createCache(cacheMaximumSize, null);
 
             given(bucketFactory.createBucket()).willReturn(bucket);
 
@@ -49,7 +49,7 @@ class Bucket4jRateLimiterUnitTest extends UnitTestSupport {
             long cacheMaximumSize = 1;
 
             Bucket bucket = createBucket(null, null, null);
-            Cache<String, Bucket> cache = createCache(cacheMaximumSize, null);
+            Cache<Object, Bucket> cache = createCache(cacheMaximumSize, null);
             cache.put("oldestKey", bucket);
 
             given(bucketFactory.createBucket()).willReturn(bucket);
@@ -69,7 +69,7 @@ class Bucket4jRateLimiterUnitTest extends UnitTestSupport {
             long bucketCapacity = 1;
 
             Bucket bucket = createBucket(bucketCapacity, null, null);
-            Cache<String, Bucket> cache = createCache(null, null);
+            Cache<Object, Bucket> cache = createCache(null, null);
 
             given(bucketFactory.createBucket()).willReturn(bucket);
 
@@ -88,7 +88,7 @@ class Bucket4jRateLimiterUnitTest extends UnitTestSupport {
             long bucketCapacity = 1;
 
             Bucket bucket = createBucket(bucketCapacity, null, null);
-            Cache<String, Bucket> cache = createCache(null, null);
+            Cache<Object, Bucket> cache = createCache(null, null);
 
             given(bucketFactory.createBucket()).willReturn(bucket);
 
@@ -116,7 +116,7 @@ class Bucket4jRateLimiterUnitTest extends UnitTestSupport {
                 .build();
     }
 
-    private Cache<String, Bucket> createCache(Long maximumSize, Long expireAfterAccess) {
+    private Cache<Object, Bucket> createCache(Long maximumSize, Long expireAfterAccess) {
         long cacheMaximumSize = maximumSize == null ? 1 : maximumSize;
         long cacheExpireAfterAccess = expireAfterAccess == null ? 60000 : expireAfterAccess;
 
