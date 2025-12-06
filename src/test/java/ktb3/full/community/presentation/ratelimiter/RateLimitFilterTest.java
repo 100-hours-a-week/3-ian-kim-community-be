@@ -28,7 +28,7 @@ class RateLimitFilterTest extends ControllerTestSupport {
     @Test
     void 버킷의_토큰수를_초과하지_않으면_요청이_허용된다() throws Exception {
         // given
-        given(rateLimiter.allowRequest(any(String.class), any(Long.class))).willReturn(true);
+        given(rateLimiter.allowRequest(anyLong(), anyLong())).willReturn(true);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/posts"));
@@ -45,7 +45,7 @@ class RateLimitFilterTest extends ControllerTestSupport {
     @Test
     void 버킷의_토큰수를_초과해_요청하면_요청이_거부된다() throws Exception {
         // given
-        given(rateLimiter.allowRequest(anyString(), anyLong())).willReturn(false);
+        given(rateLimiter.allowRequest(anyLong(), anyLong())).willReturn(false);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/posts"));
