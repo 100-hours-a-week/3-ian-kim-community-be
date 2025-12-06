@@ -55,7 +55,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     }
 
     private boolean isRequestRejected(Object target, HttpServletResponse response) throws IOException {
-        if (!rateLimiter.allowRequest(target.toString(), props.getNumTokensToConsume())) {
+        if (!rateLimiter.allowRequest(target, props.getNumTokensToConsume())) {
             ApiResponse<Void> apiResponse = ApiResponse.error(ApiErrorCode.TOO_MANY_REQUESTS);
             ResponseUtil.responseJsonUtf8(response, HttpStatus.TOO_MANY_REQUESTS.value(), objectMapper.writeValueAsString(apiResponse));
             return true;
