@@ -30,7 +30,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     public PagedModel<CommentResponse> getAllComments(long postId, Pageable pageable) {
-        Page<Comment> commentsPageResponse = commentRepository.findAllLatestByPostId(postId, pageable);
+        Page<Comment> commentsPageResponse = commentRepository.findAllActive(postId, pageable);
         return new PagedModel<>(commentsPageResponse.map(CommentResponse::from));
     }
 

@@ -17,9 +17,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query(value = "select c from Comment c where c.id = :id and c.isDeleted = false")
     Optional<Comment> findByIdActive(@NonNull @Param("id") Long id);
 
-    @Query(value = "select c from Comment c left join fetch c.user where c.post.id = :postId and c.isDeleted = false order by c.createdAt desc",
+    @Query(value = "select c from Comment c left join fetch c.user where c.post.id = :postId and c.isDeleted = false",
             countQuery = "select count(c) from Comment c where c.post.id = :postId and c.isDeleted = false")
-    Page<Comment> findAllLatestByPostId(@Param("postId") long postId, Pageable pageable);
+    Page<Comment> findAllActive(@Param("postId") long postId, Pageable pageable);
 
     @Modifying
     @Query(value = "update Comment c set c.isDeleted = true, c.deletedAt = CURRENT_TIMESTAMP where c.post.id = :postId")
