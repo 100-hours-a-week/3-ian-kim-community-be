@@ -12,3 +12,13 @@ file:
   path:
     base: src/test/resources/static
     image: /images
+
+rate-limiter:
+  cache:
+    maximum-size: 1
+    expire-after-access: 1
+  bucket:
+    capacity: 1
+    refill-tokens: 1
+    refill-periods: 1
+  num-tokens-to-consume: 1
