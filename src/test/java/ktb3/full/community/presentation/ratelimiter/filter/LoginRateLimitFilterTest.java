@@ -3,6 +3,7 @@ package ktb3.full.community.presentation.ratelimiter.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ktb3.full.community.IntegrationTestSupport;
 import ktb3.full.community.dto.request.UserLoginRequest;
+import ktb3.full.community.fixture.RateLimitResultFixture;
 import ktb3.full.community.presentation.ratelimiter.RateLimitResult;
 import ktb3.full.community.presentation.ratelimiter.RateLimitType;
 import ktb3.full.community.presentation.ratelimiter.RateLimiter;
@@ -39,7 +40,7 @@ class LoginRateLimitFilterTest extends IntegrationTestSupport {
                 .password("Password123!")
                 .build();
 
-        RateLimitResult allowed = createAllowedResult();
+        RateLimitResult allowed = RateLimitResultFixture.createAllowedResult();
 
         given(rateLimiter.allowRequest(startsWith("ip:127.0.0.1"), anyLong(), eq(RateLimitType.LOGIN))).willReturn(allowed);
         given(rateLimiter.allowRequest(startsWith("email:email@example.com"), anyLong(), eq(RateLimitType.LOGIN))).willReturn(allowed);
@@ -72,8 +73,8 @@ class LoginRateLimitFilterTest extends IntegrationTestSupport {
                 .password("Password123!")
                 .build();
 
-        RateLimitResult allowed = createAllowedResult();
-        RateLimitResult disallowed = createDisallowedResult();
+        RateLimitResult allowed = RateLimitResultFixture.createAllowedResult();
+        RateLimitResult disallowed = RateLimitResultFixture.createDisallowedResult();
 
         given(rateLimiter.allowRequest(startsWith("ip:127.0.0.1"), anyLong(), eq(RateLimitType.LOGIN))).willReturn(disallowed);
         given(rateLimiter.allowRequest(startsWith("email:email@example.com"), anyLong(), eq(RateLimitType.LOGIN))).willReturn(allowed);
@@ -107,8 +108,8 @@ class LoginRateLimitFilterTest extends IntegrationTestSupport {
                 .password("Password123!")
                 .build();
 
-        RateLimitResult allowed = createAllowedResult();
-        RateLimitResult disallowed = createDisallowedResult();
+        RateLimitResult allowed = RateLimitResultFixture.createAllowedResult();
+        RateLimitResult disallowed = RateLimitResultFixture.createDisallowedResult();
 
         given(rateLimiter.allowRequest(startsWith("ip:127.0.0.1"), anyLong(), eq(RateLimitType.LOGIN))).willReturn(allowed);
         given(rateLimiter.allowRequest(startsWith("email:email@example.com"), anyLong(), eq(RateLimitType.LOGIN))).willReturn(disallowed);
@@ -134,15 +135,5 @@ class LoginRateLimitFilterTest extends IntegrationTestSupport {
                 .andExpect(jsonPath("$.data").isEmpty());;
     }
 
-    private static RateLimitResult createDisallowedResult() {
-        return RateLimitResult.builder()
-                .consumed(false)
-                .build();
-    }
 
-    private static RateLimitResult createAllowedResult() {
-        return RateLimitResult.builder()
-                .consumed(true)
-                .build();
-    }
 }
