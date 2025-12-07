@@ -14,11 +14,31 @@ file:
     image: /images
 
 rate-limiter:
-  cache:
-    maximum-size: 1
-    expire-after-access: 1
-  bucket:
-    capacity: 1
-    refill-tokens: 1
-    refill-periods: 1
   num-tokens-to-consume: 1
+
+  login:
+    bucket:
+      capacity: 10
+      refill-tokens: 1
+      refill-periods: 600
+    cache:
+      maximum-size: 10
+      expire-after-access: 600
+
+  authenticated:
+    bucket:
+      capacity: 10
+      refill-tokens: 1
+      refill-periods: 600
+    cache:
+      maximum-size: 10
+      expire-after-access: 600
+
+  unauthenticated:
+    bucket:
+      capacity: 10
+      refill-tokens: 1
+      refill-periods: 600
+    cache:
+      maximum-size: 10
+      expire-after-access: 600

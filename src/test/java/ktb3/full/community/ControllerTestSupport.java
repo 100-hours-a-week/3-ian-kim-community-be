@@ -6,7 +6,9 @@ import ktb3.full.community.presentation.controller.AuthenticatedUserApiControlle
 import ktb3.full.community.presentation.controller.CommentApiController;
 import ktb3.full.community.presentation.controller.PostApiController;
 import ktb3.full.community.presentation.controller.UserApiController;
-import ktb3.full.community.presentation.ratelimiter.RateLimitFilter;
+import ktb3.full.community.presentation.ratelimiter.filter.AuthenticatedRateLimitFilter;
+import ktb3.full.community.presentation.ratelimiter.filter.LoginRateLimitFilter;
+import ktb3.full.community.presentation.ratelimiter.filter.UnauthenticatedRateLimitFilter;
 import ktb3.full.community.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,7 +27,11 @@ import org.springframework.test.web.servlet.MockMvc;
         PostApiController.class,
         CommentApiController.class,
 },
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = RateLimitFilter.class)
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = LoginRateLimitFilter.class),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = UnauthenticatedRateLimitFilter.class),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuthenticatedRateLimitFilter.class)
+        }
 )
 public abstract class ControllerTestSupport {
 

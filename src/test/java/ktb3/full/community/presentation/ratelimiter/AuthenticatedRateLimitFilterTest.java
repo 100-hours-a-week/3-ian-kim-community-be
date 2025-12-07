@@ -1,11 +1,14 @@
 package ktb3.full.community.presentation.ratelimiter;
 
-import io.github.bucket4j.ConsumptionProbe;
 import ktb3.full.community.ControllerTestSupport;
 import ktb3.full.community.config.WithAuthMockUser;
 import ktb3.full.community.presentation.controller.PostApiController;
+import ktb3.full.community.presentation.ratelimiter.filter.LoginRateLimitFilter;
+import ktb3.full.community.presentation.ratelimiter.filter.UnauthenticatedRateLimitFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -19,8 +22,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({RateLimiterConfig.class})
 @WebMvcTest(controllers = {
         PostApiController.class
-})
-class RateLimitFilterTest extends ControllerTestSupport {
+},
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = LoginRateLimitFilter.class),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = UnauthenticatedRateLimitFilter.class),
+        })
+class AuthenticatedRateLimitFilterTest extends ControllerTestSupport {
 
     @MockitoBean
     private RateLimiter rateLimiter;
@@ -29,8 +36,11 @@ class RateLimitFilterTest extends ControllerTestSupport {
     @Test
     void 버킷의_토큰수를_초과하지_않으면_요청이_허용된다() throws Exception {
         // given
-        ConsumptionProbe probe = ConsumptionProbe.consumed(1L, 1L);
-        given(rateLimiter.allowRequest(anyLong(), anyLong())).willReturn(probe);
+        RateLimitResult result = RateLimitResult.builder()
+                .consumed(true)
+                .build();
+
+        given(rateLimiter.allowRequest(anyString(), anyLong(), any(RateLimitType.class))).willReturn(result);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/posts"));
@@ -50,8 +60,11 @@ class RateLimitFilterTest extends ControllerTestSupport {
     @Test
     void 버킷의_토큰수를_초과해_요청하면_요청이_거부된다() throws Exception {
         // given
-        ConsumptionProbe probe = ConsumptionProbe.rejected(1L, 1L, 1L);
-        given(rateLimiter.allowRequest(anyLong(), anyLong())).willReturn(probe);
+        RateLimitResult result = RateLimitResult.builder()
+                .consumed(false)
+                .build();
+
+        given(rateLimiter.allowRequest(anyString(), anyLong(), any(RateLimitType.class))).willReturn(result);
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/posts"));
