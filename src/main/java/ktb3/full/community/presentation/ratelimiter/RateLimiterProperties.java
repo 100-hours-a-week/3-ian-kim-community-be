@@ -9,15 +9,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "rate-limiter")
 public class RateLimiterProperties {
 
-    private final CacheProperties cache;
-    private final BucketProperties bucket;
-    private final Long numTokensToConsume;
+    private final long numTokensToConsume;
+
+    private final PolicyProperties login;
+    private final PolicyProperties authenticated;
+    private final PolicyProperties unauthenticated;
 
     @Getter
     @RequiredArgsConstructor
-    public static class CacheProperties {
-        private final long maximumSize;
-        private final long expireAfterAccess;
+    public static class PolicyProperties {
+        private final BucketProperties bucket;
+        private final CacheProperties cache;
     }
 
     @Getter
@@ -26,5 +28,12 @@ public class RateLimiterProperties {
         private final long capacity;
         private final long refillTokens;
         private final long refillPeriods;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class CacheProperties {
+        private final long maximumSize;
+        private final long expireAfterAccess;
     }
 }

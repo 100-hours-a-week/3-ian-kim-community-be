@@ -1,7 +1,9 @@
 package ktb3.full.community.presentation.ratelimiter.bucket;
 
 import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.BandwidthBuilder;
 import io.github.bucket4j.Bucket;
+import ktb3.full.community.presentation.ratelimiter.RateLimitType;
 import ktb3.full.community.presentation.ratelimiter.RateLimiterProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,16 +14,37 @@ import java.time.Duration;
 @Component
 public class BucketFactory {
 
-    private final RateLimiterProperties props;
+    private final RateLimiterProperties properties;
 
-    public Bucket createBucket() {
-        Bandwidth bandwidth = Bandwidth.builder()
-                .capacity(props.getBucket().getCapacity())
-                .refillIntervally(props.getBucket().getRefillTokens(), Duration.ofMillis(props.getBucket().getRefillPeriods()))
-                .build();
-
+    public Bucket createBucket(RateLimitType rateLimitType) {
         return Bucket.builder()
-                .addLimit(bandwidth)
+                .addLimit(createBandwidth(rateLimitType))
                 .build();
+    }
+
+    private Bandwidth createBandwidth(RateLimitType type) {
+        RateLimiterProperties.BucketProperties props = getPolicyProps(type).getBucket();
+        Duration period = Duration.ofSeconds(props.getRefillPeriods());
+
+        BandwidthBuilder.BandwidthBuilderRefillStage bandWithBuilder = Bandwidth.builder()
+                .capacity(props.getCapacity());
+
+        return switch (type) {
+            case LOGIN -> bandWithBuilder
+                    .refillIntervally(props.getRefillTokens(), period)
+                    .build();
+
+            case AUTHENTICATED, UNAUTHENTICATED -> bandWithBuilder
+                    .refillGreedy(props.getRefillTokens(), period)
+                    .build();
+        };
+    }
+
+    private RateLimiterProperties.PolicyProperties getPolicyProps(RateLimitType type) {
+        return switch (type) {
+            case LOGIN -> properties.getLogin();
+            case AUTHENTICATED -> properties.getAuthenticated();
+            case UNAUTHENTICATED -> properties.getUnauthenticated();
+        };
     }
 }

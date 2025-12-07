@@ -1,7 +1,9 @@
 package ktb3.full.community.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ktb3.full.community.presentation.ratelimiter.RateLimitFilter;
+import ktb3.full.community.presentation.ratelimiter.filter.AuthenticatedRateLimitFilter;
+import ktb3.full.community.presentation.ratelimiter.filter.LoginRateLimitFilter;
+import ktb3.full.community.presentation.ratelimiter.filter.UnauthenticatedRateLimitFilter;
 import ktb3.full.community.security.filter.LoginFilter;
 import ktb3.full.community.security.handler.SpaCsrfTokenRequestHandler;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +43,9 @@ public class SecurityConfig {
     private final LogoutSuccessHandler logoutSuccessHandler;
     private final AccessDeniedHandler accessDeniedHandler;
     private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final RateLimitFilter rateLimitFilter;
+    private final AuthenticatedRateLimitFilter authenticatedRateLimitFilter;
+    private final UnauthenticatedRateLimitFilter unauthenticatedRateLimitFilter;
+    private final LoginRateLimitFilter loginRateLimitFilter;
     private final ObjectMapper objectMapper;
 
     @Bean
@@ -82,12 +86,20 @@ public class SecurityConfig {
                         .deleteCookies(SESSION_COOKIE_NAME))
 
                 .addFilterBefore(
-                        rateLimitFilter,
+                        loginRateLimitFilter,
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .addFilterAt(
                         new LoginFilter(authenticationManager, authenticationSuccessHandler, authenticationFailureHandler, objectMapper),
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(
+                        unauthenticatedRateLimitFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterAfter(
+                        authenticatedRateLimitFilter,
+                        UnauthenticatedRateLimitFilter.class
+                );
 
         return http.build();
     }

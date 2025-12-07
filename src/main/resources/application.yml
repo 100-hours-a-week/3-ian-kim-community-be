@@ -41,11 +41,31 @@ server:
         secure: true
 
 rate-limiter:
-  cache:
-    maximum-size: 10000
-    expire-after-access: 600000
-  bucket:
-    capacity: 100
-    refill-tokens: 1
-    refill-periods: 600
   num-tokens-to-consume: 1
+
+  login:
+    bucket:
+      capacity: 5 # 최대 토큰 수
+      refill-tokens: 1 # 충전 토큰 수
+      refill-periods: 600 # 토큰 충전 주기 = 600s(10m)
+    cache:
+      maximum-size: 10_000 # 최대 엔트리 수
+      expire-after-access: 3_600_000 # 마지막 접근 후 만료 시간 = 3,600,000ms(1h)
+
+  authenticated:
+    bucket:
+      capacity: 100
+      refill-tokens: 100
+      refill-periods: 60 # 60s(1m)
+    cache:
+      maximum-size: 10000
+      expire-after-access: 60_000 # 60,000ms(1m)
+
+  unauthenticated:
+    bucket:
+      capacity: 20
+      refill-tokens: 20
+      refill-periods: 60
+    cache:
+      maximum-size: 10000
+      expire-after-access: 60_000

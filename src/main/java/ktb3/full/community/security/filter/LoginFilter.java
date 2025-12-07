@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
 
@@ -33,7 +34,8 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            UserLoginRequest userLoginRequest = objectMapper.readValue(request.getInputStream(), UserLoginRequest.class);
+            ContentCachingRequestWrapper wrappedRequest = (ContentCachingRequestWrapper) request;
+            UserLoginRequest userLoginRequest = objectMapper.readValue(wrappedRequest.getContentAsByteArray(), UserLoginRequest.class);
             UsernamePasswordAuthenticationToken authentication = UsernamePasswordAuthenticationToken.unauthenticated(userLoginRequest.getEmail(), userLoginRequest.getPassword());
             return getAuthenticationManager().authenticate(authentication);
         } catch (IOException e) {
