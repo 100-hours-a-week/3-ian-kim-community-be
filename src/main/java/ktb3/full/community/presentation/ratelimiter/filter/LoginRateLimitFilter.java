@@ -61,7 +61,7 @@ public class LoginRateLimitFilter extends OncePerRequestFilter {
         RateLimitResult resultByIpEmail = rateLimiter.allowRequest(clientKeyByEmail, props.getNumTokensToConsume(), RateLimitType.LOGIN);
         ResponseUtil.responseRateLimitHeaders(response, resultByIpEmail, props.getLogin());
 
-        if (!resultByIpAddr.isConsumed()) {
+        if (!resultByIpEmail.isConsumed()) {
             log.info("Login Rate limit exceeded for Email: {}", userLoginRequest.getEmail());
             ResponseUtil.responseRateLimitRejected(response, resultByIpEmail, objectMapper);
             return;
